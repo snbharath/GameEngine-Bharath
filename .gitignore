@@ -8,3 +8,11 @@
 *.userprefs
 *.pidb
 *.booproj
+*.vcxproj
+*.vcxproj.filters
+*.filters
+*.VC.db
+*.db
+*.opendb
+*.VC.opendb
+*.VC.VC.opendb
