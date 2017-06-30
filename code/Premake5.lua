@@ -13,7 +13,7 @@ local directx_string = "DIRECT3D"
 project "GameEngine"
 kind "ConsoleApp"
 language (lang)
-targetdir "../bin/%{cfg.buildcfg}"
+targetdir "./bin/%{cfg.buildcfg}"
 location "Engine"
 files { "Engine/**" }
 --files { "Engine/**.c" }
