@@ -4,15 +4,15 @@
 #command goes like this
 
 ###
-#   ./BuildLinuxProject.sh <type-of-build>
-# currently supported Debug_i386, Debug_amd64, Release_i386 and Release_amd64
+#   ./CleanLinuxProject.sh <type-of-build>
+# currently supported debug_i386, debug_amd64, release_i386 and release_amd64
 ###
 
 arr=()
-arr+=("debug_i386")
-arr+=("debug_amd64")
-arr+=("release_i386")
-arr+=("release_amd64")
+arr+=("debug_i386") # 32 bit debug build
+arr+=("debug_amd64") # 64 bit debug build
+arr+=("release_i386") # 32 bit release build
+arr+=("release_amd64") # 64 bit release build
 
 cd ../code
 
