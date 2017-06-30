@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#Builds the project
+#Cleans the project
 #command goes like this
 
 ###
@@ -19,17 +19,17 @@ cd ../code
 
 if [[ " ${arr[*]} " == *"$1"* ]];
 then
-	echo "Building $1 ..."
-	make config=$1
+	echo "Cleaning $1 ..."
+	make config=$1 clean
 	echo "Done."
 elif [ "all" == $1 ]
 then
-	echo "Building all configurations..."
+	echo "Cleaning all builds..."
 
 	for str in "${arr[@]}"
 	do
-		echo "Building $str..."
-		make config=$str
+		echo "Cleaning $str..."
+		make config=$str clean
 		echo -e "\n"
 	done
 
@@ -37,7 +37,7 @@ then
 else
 	echo "The specified configuration isn't supported/available."
 	echo "Supported configurations are debug_i386, debug_amd64, release_i386, release_amd64"
-	echo "Usage : ./BuildLinuxProject.sh <type-of-build>"
-	echo "Example : ./BuildLinuxProject.sh release_i386"
-	echo "To build all use : ./BuildLinuxProject.sh all"
+	echo "Usage : ./CleanLinuxProject.sh <type-of-build>"
+	echo "Example : ./CleanLinuxProject.sh release_i386"
+	echo "To clear all builds use ./CleanLinuxProject.sh all"
 fi

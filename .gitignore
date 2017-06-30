@@ -16,5 +16,13 @@
 *.opendb
 *.VC.opendb
 *.VC.VC.opendb
-/bin
-/obj
+*.workspace
+*.project
+*.mk
+GameEngine.txt
+bin/
+obj/
+Makefile
+code/Engine/obj/
+code/bin/
+code/.codelite/
