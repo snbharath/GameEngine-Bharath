@@ -13,7 +13,8 @@ local directx_string = "DIRECT3D"
 project "GameEngine"
 kind "ConsoleApp"
 language (lang)
-targetdir "./bin/%{cfg.buildcfg}"
+targetdir "./bin/%{cfg.buildcfg}/%{cfg.platform}"
+-- libdirs  ( <follow the target dir pattern> )
 location "Engine"
 files { "Engine/**" }
 --files { "Engine/**.c" }
@@ -52,10 +53,12 @@ filter "configurations:Release_OpenGL" defines { "NDEBUG", directx_string} optim
 
 
 -- platform configuration for 32-bit build
-filter{ "platforms:Win32"} system "Windows" architecture "x32"
+if( os.get() == "windows" ) then filter{ "platforms:Win32" } system "Windows" architecture "x32"
+else filter{ "platforms:Win32" } system "Linux" architecture "x32" end
 
 -- platform configuration for 64-bit build
-filter{"platforms:Win64"} system "Windows" architecture "x64"
+if( os.get() == "windows" ) then filter{ "platforms:Win64" } system "Windows" architecture "x64"
+else filter{ "platforms:Win64" } system "Linux" architecture "x64" end
 
 --Make sure the stuff we are developing for Xbox is from windows, there is no support for Linux development environment for XBox
 if(os.get() == "windows" ) then filter{ "platforms:Xbox" } system "Xbox360" end
