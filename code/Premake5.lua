@@ -5,6 +5,10 @@ platforms {"Win32", "Win64", "XBoxOne"}
 
 
 local lang = "C++"
+local Rendering_Subsystem
+local Operating_System
+local opengl_string = "OPENGL"
+local directx_string = "DIRECT3D"
 
 project "GameEngine"
 kind "ConsoleApp"
@@ -15,41 +19,43 @@ files { "Engine/**" }
 --files { "Engine/**.c" }
 --files { "Engine/**.cpp" }
 
--- Normal Debug version
-filter { "configurations:Debug" }
-  defines { "DEBUG" }
-  symbols "On"
+--detect the operating system
+if(os.get() == "windows") then
+	Rendering_Subsystem = "DIRECT3D"
+else
+	Rendering_Subsystem = "OPENGL"
+end
 
--- Debug and Debug directx are all same 
-filter "configurations:Debug_D3D"
-  defines { "DEBUG" }
-  symbols "On"
--- Debug Open GL version
-filter "configurations:Debug_OpenGL"
-  defines { "DEBUG" }
-  symbols "On"
 
--- Normal Release version
-filter "configurations:Release"
-  defines { "NDEBUG" }
-  optimize "On"
+-- Degub stuff here
+-- Normal Debug version, by default it uses DIRECT X, if you want OPENGL by default change "DIRECT3D" to "OPENGL"
+if( os.get() == "windows" ) then filter { "configurations:Debug" } defines { "DEBUG", directx_string } symbols "On"
+else filter { "configurations:Debug" } defines { "DEBUG", opengl_string } symbols "On" end
 
-filter "configurations:Release_D3D"
-  defines { "NDEBUG" }
-  optimize "On"
+-- Debug directx make sure this configuration exists only for windows 
+if( os.get() == "windows" ) then filter "configurations:Debug_D3D" defines { "DEBUG", directx_string } symbols "On" end
   
-filter "configurations:Release_OpenGL"
-  defines { "NDEBUG" }
-  optimize "On"
-  
-filter{ "platforms:Win32"}
-  system "Windows"
-  architecture "x32"
-  
-filter{"platforms:Win64"}
-  system "Windows"
-  architecture "x64"
-  
-filter{ "platforms:Xbox" }
-  system "Xbox360"
-  
+-- Debug Open GL version, both Windows and Linux
+filter "configurations:Debug_OpenGL" defines { "DEBUG", opengl_string } symbols "On"
+
+
+-- Release stuff here
+-- Normal Release version, by default it uses DIRECT X, if you want OPENGL by default change "DIRECT3D" to "OPENGL"
+if( os.get() == "windows" ) then filter "configurations:Release" defines { "NDEBUG", directx_string } optimize "On"
+else filter "configurations:Release" defines { "NDEBUG", opengl_string } optimize "On" end
+
+--Release Directx make sure this configuration exists only for windows platform
+if( os.get() == "windows" ) then filter "configurations:Release_D3D" defines { "NDEBUG", directx_string} optimize "On" end
+
+--Release OpenGL, both for windows and Linux  
+filter "configurations:Release_OpenGL" defines { "NDEBUG", directx_string} optimize "On"
+
+
+-- platform configuration for 32-bit build
+filter{ "platforms:Win32"} system "Windows" architecture "x32"
+
+-- platform configuration for 64-bit build
+filter{"platforms:Win64"} system "Windows" architecture "x64"
+
+--Make sure the stuff we are developing for Xbox is from windows, there is no support for Linux development environment for XBox
+if(os.get() == "windows" ) then filter{ "platforms:Xbox" } system "Xbox360" end

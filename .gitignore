@@ -16,3 +16,4 @@
 *.opendb
 *.VC.opendb
 *.VC.VC.opendb
+/bin
