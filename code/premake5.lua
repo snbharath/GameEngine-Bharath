@@ -1,8 +1,14 @@
 -- premake5.lua
 workspace "GameEngineMain" -- can also be used as workspace("GameEngineMain")
+
+--platform dependent configuration files
+if( os.get() == "windows" ) then
 configurations { "Debug", "Debug_D3D", "Debug_OpenGL", "Release", "Release_D3D", "Release_OpenGL"}
 platforms {"Win32", "Win64", "XBoxOne"}
-
+else
+configurations { "Debug", "Release"} -- just OpenGL rendering subsystem only
+platforms {"i386", "amd64"}
+end
 
 local lang = "C++"
 local Rendering_Subsystem
