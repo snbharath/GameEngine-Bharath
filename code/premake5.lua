@@ -1,3 +1,16 @@
+-- add all the binary directories that you want to clean
+newaction {
+   trigger     = "clean",
+   description = "clean the software",
+   execute     = function ()
+      print("clean the build...")
+      os.rmdir("./bin")
+	  os.rmdir("./Engine/obj")
+      print("done.")
+   end
+}
+
+
 -- premake5.lua
 workspace "GameEngineMain" -- can also be used as workspace("GameEngineMain")
 
@@ -46,7 +59,7 @@ else filter { "configurations:Debug" } defines { "DEBUG", opengl_string } symbol
 if( os.get() == "windows" ) then filter "configurations:Debug_D3D" defines { "DEBUG", directx_string } symbols "On" end
   
 -- Debug Open GL version, both Windows and Linux
-filter "configurations:Debug_OpenGL" defines { "DEBUG", opengl_string } symbols "On" links { "opengl32", "glfw3_d" } includedirs { "RenderingLibraries/include/**" }
+filter "configurations:Debug_OpenGL" defines { "DEBUG", opengl_string } symbols "On" links { "opengl32", "glfw3_d" } includedirs { "RenderingLibraries/include/**", "Engine/include/opengl_ver/" }
 
 
 -- Release stuff here
@@ -58,7 +71,7 @@ else filter "configurations:Release" defines { "NDEBUG", opengl_string } optimiz
 if( os.get() == "windows" ) then filter "configurations:Release_D3D" defines { "NDEBUG", directx_string} optimize "On" end
 
 --Release OpenGL, both for windows and Linux  
-filter "configurations:Release_OpenGL" defines { "NDEBUG", directx_string} optimize "On" links { "opengl32", "glfw3" } includedirs { "RenderingLibraries/include/**" }
+filter "configurations:Release_OpenGL" defines { "NDEBUG", opengl_string} optimize "On" links { "opengl32", "glfw3" } includedirs { "RenderingLibraries/include/**", "Engine/include/opengl_ver/" }
 
 
 -- platform configuration for 32-bit build
