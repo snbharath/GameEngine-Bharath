@@ -1,6 +1,6 @@
 
 #ifdef OPENGL
-#include<glad/glad.h>
+#include <glad/glad.h>
 #include <glfw3.h>
 #endif
 
@@ -9,6 +9,7 @@
 #include <math.h>
 #include <iostream>
 
+#include "Math/Math.h"
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
 
@@ -30,6 +31,7 @@ void processInput(GLFWwindow* window)
 
 int main()
 {
+    cout << "Some output : " << Math << endl;
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);

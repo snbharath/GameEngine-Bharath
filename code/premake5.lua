@@ -38,6 +38,9 @@ location "Engine"
 files { "Engine/**" }
 if( os.get() == "windows" ) then
 libdirs { "RenderingLibraries/lib/%{cfg.platform}/**" }
+else
+--libdirs { "/usr/lib/x86_64-linux-gnu/" }
+libdirs { "RenderingLibraries/lib/Linux/" }
 end
 --files { "Engine/**.c" }
 --files { "Engine/**.cpp" }
@@ -49,6 +52,13 @@ else
 	Rendering_Subsystem = "OPENGL"
 end
 
+if( os.get() == "windows" ) then
+links { "opengl32", "glfw3_d" } includedirs { "RenderingLibraries/include/**", "Engine/include/opengl_ver/" }
+else
+links { "glfw3", "dl", "GL" } includedirs { "RenderingLibraries/include/**", "Engine/include/opengl_ver/", "/usr/include/GL/" }
+--links { "glfw3", "dl" } includedirs { "RenderingLibraries/include/**", "Engine/include/opengl_ver/", "/usr/include/GL/" }
+end
+
 
 -- Degub stuff here
 -- Normal Debug version, by default it uses DIRECT X, if you want OPENGL by default change "DIRECT3D" to "OPENGL"
@@ -58,8 +68,8 @@ else filter { "configurations:Debug" } defines { "DEBUG", opengl_string } symbol
 -- Debug directx make sure this configuration exists only for windows 
 if( os.get() == "windows" ) then filter "configurations:Debug_D3D" defines { "DEBUG", directx_string } symbols "On" end
   
--- Debug Open GL version, both Windows and Linux
-filter "configurations:Debug_OpenGL" defines { "DEBUG", opengl_string } symbols "On" links { "opengl32", "glfw3_d" } includedirs { "RenderingLibraries/include/**", "Engine/include/opengl_ver/" }
+-- Debug Open GL version, both Windows and Linux. Put if condition here just to make sure that the objects are linked properly
+filter "configurations:Debug_OpenGL" defines { "DEBUG", opengl_string } symbols "On" 
 
 
 -- Release stuff here
@@ -70,9 +80,9 @@ else filter "configurations:Release" defines { "NDEBUG", opengl_string } optimiz
 --Release Directx make sure this configuration exists only for windows platform
 if( os.get() == "windows" ) then filter "configurations:Release_D3D" defines { "NDEBUG", directx_string} optimize "On" end
 
---Release OpenGL, both for windows and Linux  
-filter "configurations:Release_OpenGL" defines { "NDEBUG", opengl_string} optimize "On" links { "opengl32", "glfw3" } includedirs { "RenderingLibraries/include/**", "Engine/include/opengl_ver/" }
+--Release OpenGL, both for windows and Linux. Put if condition here just to make sure that the object are linked properly
 
+filter "configurations:Release_OpenGL" defines { "NDEBUG", opengl_string} optimize "On" links { "opengl32", "glfw3" }
 
 -- platform configuration for 32-bit build
 if( os.get() == "windows" ) then filter{ "platforms:Win32" } system "Windows" architecture "x32"
