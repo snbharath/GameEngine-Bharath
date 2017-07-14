@@ -39,8 +39,7 @@ files { "Engine/**" }
 if( os.get() == "windows" ) then
 libdirs { "RenderingLibraries/lib/%{cfg.platform}/**" }
 else
---libdirs { "/usr/lib/x86_64-linux-gnu/" }
-libdirs { "RenderingLibraries/lib/Linux/" }
+libdirs { "RenderingLibraries/lib/%{cfg.platform}/**" }
 end
 --files { "Engine/**.c" }
 --files { "Engine/**.cpp" }
@@ -55,8 +54,7 @@ end
 if( os.get() == "windows" ) then
 links { "opengl32", "glfw3_d" } includedirs { "RenderingLibraries/include/**", "Engine/include/opengl_ver/" }
 else
-links { "glfw3", "dl", "GL" } includedirs { "RenderingLibraries/include/**", "Engine/include/opengl_ver/", "/usr/include/GL/" }
---links { "glfw3", "dl" } includedirs { "RenderingLibraries/include/**", "Engine/include/opengl_ver/", "/usr/include/GL/" }
+links { "glfw", "dl", "GL" } includedirs { "RenderingLibraries/include/**", "Engine/include/opengl_ver/", "/usr/include/GL/" }
 end
 
 
@@ -82,7 +80,7 @@ if( os.get() == "windows" ) then filter "configurations:Release_D3D" defines { "
 
 --Release OpenGL, both for windows and Linux. Put if condition here just to make sure that the object are linked properly
 
-filter "configurations:Release_OpenGL" defines { "NDEBUG", opengl_string} optimize "On" links { "opengl32", "glfw3" }
+filter "configurations:Release_OpenGL" defines { "NDEBUG", opengl_string} optimize "On"
 
 -- platform configuration for 32-bit build
 if( os.get() == "windows" ) then filter{ "platforms:Win32" } system "Windows" architecture "x32"
