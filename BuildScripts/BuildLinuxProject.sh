@@ -17,7 +17,7 @@ arr+=("release_amd64") # 64 bit release build
 cd ../code
 
 
-if [[ "${arr[*]}" == "$1" ]]
+if [[ "${arr[*]}" == *"$1"* ]]
 then
 	echo "Building $1 ..."
 	make config=$1
