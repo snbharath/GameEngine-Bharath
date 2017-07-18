@@ -1,17 +1,7 @@
-
-#ifdef OPENGL
-#include <glad/glad.h>
-#include <glfw3.h>
-#endif
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <iostream>
-
-#include "Math/Math.h"
-#define WINDOW_WIDTH 800
-#define WINDOW_HEIGHT 600
 
 using namespace std;
 

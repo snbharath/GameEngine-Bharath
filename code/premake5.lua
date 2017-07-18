@@ -51,10 +51,11 @@ else
 	Rendering_Subsystem = "OPENGL"
 end
 
+
 if( os.get() == "windows" ) then
-links { "opengl32", "glfw3_d" } includedirs { "RenderingLibraries/include/**", "Engine/include/opengl_ver/" }
+links { "opengl32", "glfw3_d" } includedirs { "RenderingLibraries/include/**", "Engine/APIAbstruction/include/", "Engine/include/opengl_ver/" }
 else
-links { "glfw", "dl", "GL" } includedirs { "RenderingLibraries/include/**", "Engine/include/opengl_ver/", "/usr/include/GL/" }
+links { "glfw", "dl", "GL" } includedirs { "RenderingLibraries/include/**", "Engine/include/opengl_ver/", "/usr/include/GL/", "Engine/APIAbstruction/include/**"}
 end
 
 
