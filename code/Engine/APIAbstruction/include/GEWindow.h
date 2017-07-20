@@ -7,24 +7,37 @@
 #define WINDOW_HEIGHT 600
 
 //its a singleton Game Engine window class
-class GEWindow
+namespace GE
 {
-private:
-	//constructor
-	GEWindow() {}
-
-	// static pointer as its a singleton class
-	static GEWindow *s_WindowInstance;
-
-public:
-
-	void InitWindow() const ;
-
-	static GEWindow *GetInstance()
+	class GEWindow
 	{
-		if (!s_WindowInstance)
-			s_WindowInstance = new GEWindow();
+	private:
+		//constructor
+		GEWindow() {}
 
-		return s_WindowInstance;
-	}
-};
+		//GLFW window instance
+		GLFWwindow* m_window = nullptr;
+
+		// static pointer as its a singleton class
+		static GEWindow *s_WindowInstance;
+
+	public:
+
+		void InitWindow();
+
+		/*
+		* Create a Rendering window here
+		* This creates a render window of Either OpenGL or DirectX
+		*/
+		int CreateGEWindow();
+
+
+		static GEWindow *Get()
+		{
+			if (!s_WindowInstance)
+				s_WindowInstance = new GEWindow();
+
+			return s_WindowInstance;
+		}
+	};
+}

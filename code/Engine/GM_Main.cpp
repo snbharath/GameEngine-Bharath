@@ -21,24 +21,7 @@ void processInput(GLFWwindow* window)
 
 int main()
 {
-    cout << "Some output : " << Math << endl;
-	glfwInit();
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	//glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);  // this is needed for the Max OS X
-
-
-	//creating a OpenGLwindow here directX window will come soon !! wait for it
-
-	GLFWwindow* window = glfwCreateWindow(800, 600, "GameEngine - by Bharath", NULL, NULL);
-
-	if (window == NULL)
-	{
-		cout << "Failed to create GLFW window" << endl;
-		return -1;
-	}
-
+	
 	glfwMakeContextCurrent(window);
 	glfwSetFramebufferSizeCallback(window, FrameBufferSizeCallBack);
 	//Load all OGL function pointers
