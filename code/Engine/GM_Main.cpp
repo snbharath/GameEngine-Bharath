@@ -5,13 +5,6 @@
 
 using namespace std;
 
-//Whenever the window is resized this function will get called
-void FrameBufferSizeCallBack(GLFWwindow* window, int width, int height)
-{
-	glViewport(0, 0, width, height);
-}
-
-
 void processInput(GLFWwindow* window)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -21,17 +14,6 @@ void processInput(GLFWwindow* window)
 
 int main()
 {
-	
-	glfwMakeContextCurrent(window);
-	glfwSetFramebufferSizeCallback(window, FrameBufferSizeCallBack);
-	//Load all OGL function pointers
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-	{
-		cout << "Falied to initialize GLAD" << endl;
-		return -1;
-	}
-
-
 	//Render loop
 	while (!glfwWindowShouldClose(window))
 	{
@@ -48,6 +30,6 @@ int main()
 	}
 
 	//terminate all previouslt allocated resources
-	glfwTerminate();
+	
 	return 0;
 }

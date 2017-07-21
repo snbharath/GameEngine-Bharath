@@ -9,35 +9,28 @@
 //its a singleton Game Engine window class
 namespace GE
 {
+	//Abstruction class definition for Render window creation
 	class GEWindow
 	{
 	private:
-		//constructor
-		GEWindow() {}
 
-		//GLFW window instance
-		GLFWwindow* m_window = nullptr;
-
-		// static pointer as its a singleton class
-		static GEWindow *s_WindowInstance;
 
 	public:
 
-		void InitWindow();
+		/*
+		* Initialize the Game engine window to start the rendering of frames
+		*/
+		virtual void InitWindow() = 0;
 
 		/*
 		* Create a Rendering window here
 		* This creates a render window of Either OpenGL or DirectX
 		*/
-		int CreateGEWindow();
+		virtual int CreateGEWindow() = 0;
 
-
-		static GEWindow *Get()
-		{
-			if (!s_WindowInstance)
-				s_WindowInstance = new GEWindow();
-
-			return s_WindowInstance;
-		}
+		/*
+		* close and terminate the Game Engine window
+		*/
+		virtual void CloseGEWindow() = 0;
 	};
 }
