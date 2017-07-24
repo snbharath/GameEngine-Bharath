@@ -2,18 +2,21 @@
 #include <stdlib.h>
 #include <math.h>
 #include <iostream>
+#include <thread>
 
 using namespace std;
 
-void processInput(GLFWwindow* window)
+void processInput()//GLFWwindow* window)
 {
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, true);
+	/*if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, true);*/
 }
 
 
 int main()
 {
+	std::thread t1(processInput);
+
 	//Render loop
 	while (!glfwWindowShouldClose(window))
 	{

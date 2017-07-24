@@ -31,7 +31,8 @@ namespace GE
 
 	public:
 
-		static const GEWindow* Get();
+		//general programming guideline virtual destructor ;) 
+		virtual ~OpenGLWindow() { glfwTerminate(); }
 
 		//Function implementation for window initialization 
 		void InitWindow() override;
@@ -41,6 +42,11 @@ namespace GE
 
 		//Function implementation for Closing OpenGL window. return 0 if closed proerly, 1 if closed with some errors
 		void CloseGEWindow() override;
+
+		/*
+		* get the instance of the class
+		*/
+		static const GEWindow* Get();
 	};
 
 }
