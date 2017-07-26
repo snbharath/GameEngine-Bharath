@@ -1,5 +1,6 @@
 /*
-* TickablObjects.h file
+* Game Engine - TickablObjects.h file
+* Tickable objects implementation of the game thread other objects
 */
 
 #pragma once
@@ -37,7 +38,7 @@ namespace GE
 		* element is already present or not. I'm going to be using find method to check that. I know that it takes O(n) for this 
 		* operation to perform. I'm going to consider this operation until I implement my own methods to do that.
 		*/
-		static std::list<TickableObject*> TickableObjectList;
+		static std::list<TickableObject*> TickableObjectsList;
 
 		static bool b_IsTickingObjects;
 
@@ -47,7 +48,7 @@ namespace GE
 		TickableObject();
 
 		//Destructor
-		virtual ~TickableObject() { };
+		virtual ~TickableObject() ;
 
 		//This can be considered as a constructor. It'll be executed for every objects that are being created
 		virtual void Init();

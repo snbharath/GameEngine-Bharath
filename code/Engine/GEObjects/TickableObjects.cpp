@@ -12,12 +12,13 @@
 
 using namespace GE;
 
+std::list<TickableObject*> TickableObject::TickableObjectsList;
 //Constructor creates and adds the created object to the list for ticking
 TickableObject::TickableObject()
 {
-	if (std::find(TickableObjectList.begin(), TickableObjectList.end(), this) == TickableObjectList.end())
+	if (std::find(TickableObjectsList.begin(), TickableObjectsList.end(), this) == TickableObjectsList.end())
 	{
-		TickableObjectList.push_back(this);
+		TickableObjectsList.push_back(this);
 	}
 
 	this->Init();
@@ -27,7 +28,7 @@ TickableObject::~TickableObject()
 {
 	this->Destroy();
 
-	TickableObjectList.remove(this);
+	TickableObjectsList.remove(this);
 }
 
 //Init function definition.. so far nothing
@@ -45,7 +46,7 @@ void TickableObject::Destroy()
 
 void TickableObject::TickObjects(const double& DeltaTime)
 {
-	for (std::list<TickableObject*>::const_iterator iterator = TickableObjectList.begin(); iterator != TickableObjectList.end(); ++iterator)
+	for (std::list<TickableObject*>::const_iterator iterator = TickableObjectsList.begin(); iterator != TickableObjectsList.end(); ++iterator)
 	{
 		// Just iterate over all ticks in here so that it enables all the active objects for processing
 		if ((*iterator)->IsTickable())

@@ -20,10 +20,10 @@ namespace GE
 	class OpenGLWindow : public GEWindow
 	{
 	private :
-		OpenGLWindow():m_GLFWCreatedWindowInstance(nullptr)
+		OpenGLWindow():m_CreatedWindowInstance(nullptr)
 		{ }
 
-		GLFWwindow* m_GLFWCreatedWindowInstance;
+		GLFWwindow* m_CreatedWindowInstance;
 		static GEWindow* s_WindowInstance;
 
 		//Whenever the window is resized this function will be called to resize the frame buffer
@@ -35,7 +35,7 @@ namespace GE
 		virtual ~OpenGLWindow() { glfwTerminate(); }
 
 		//Function implementation for window initialization 
-		void InitWindow() override;
+		int InitWindow() override;
 
 		//Function implementation for Window creation. returns 0 if everything is Ok, else non-zero
 		int CreateGEWindow() override;
@@ -43,10 +43,11 @@ namespace GE
 		//Function implementation for Closing OpenGL window. return 0 if closed proerly, 1 if closed with some errors
 		void CloseGEWindow() override;
 
-		/*
-		* get the instance of the class
-		*/
-		static const GEWindow* Get();
+		//Used to get the OpenGL window instance
+		GLFWwindow* GetGLFWCreatedWindowInstance() const { return m_CreatedWindowInstance; }
+
+		//Create a OpenGL window instance here and return it the base class
+		static GEWindow* Get() ;
 	};
 
 }

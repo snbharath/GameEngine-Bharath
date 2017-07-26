@@ -20,7 +20,7 @@ namespace GE
 		/*
 		* Initialize the Game engine window to start the rendering of frames
 		*/
-		virtual void InitWindow() = 0;
+		virtual int InitWindow() = 0;
 
 		/*
 		* Create a Rendering window here
