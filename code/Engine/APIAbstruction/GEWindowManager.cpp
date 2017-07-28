@@ -20,8 +20,13 @@ GEWindowManager* GEWindowManager::Get()
 void GEWindowManager::Init()
 {
 #ifdef DIRECT3D
+
 	// Init 
+
+
 #elif OPENGL
+
+
 	//Create an instance of OpenGL Window here
 	//Initialize the window
 	assert(OpenGLWindow::Get()->InitWindow());
@@ -31,8 +36,14 @@ void GEWindowManager::Init()
 
 	//Just make sure that the window instance has been created
 	assert(reinterpret_cast<OpenGLWindow*>(OpenGLWindow::Get())->GetGLFWCreatedWindowInstance() != NULL);
+
+
 #else
+
+
 	// place holder
+
+
 #endif
 }
 
