@@ -5,6 +5,8 @@
 
 #include "GEWindowManager.h"
 #include <assert.h>
+
+
 GEWindowManager* GEWindowManager::m_GEWindowManagerInstance = nullptr;
 
 GEWindowManager* GEWindowManager::Get()

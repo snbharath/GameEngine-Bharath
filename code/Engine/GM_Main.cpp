@@ -19,8 +19,6 @@ void processInput(GLFWwindow* window)
 int main()
 {
 	//std::thread t1(processInput);
-
-	
 	
 	//Render loop
 	while (!glfwWindowShouldClose(    reinterpret_cast<OpenGLWindow*>(GEWindowManager::Get()->GetWindowInstance())->GetGLFWCreatedWindowInstance()   ))

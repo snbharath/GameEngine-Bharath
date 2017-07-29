@@ -2,7 +2,6 @@
 
 using namespace GE;
 
-
 GameEngine* GameEngine::m_GameEngineInstance = nullptr;
 
 GameEngine* GameEngine::Get()
@@ -14,6 +13,11 @@ GameEngine* GameEngine::Get()
 }
 
 void GameEngine::InitializeEngine()
+{
+	
+}
+
+void GameEngine::StartRendering()
 {
 	
 }

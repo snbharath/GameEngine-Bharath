@@ -172,3 +172,14 @@
 #define GE_JOYSTICK_15            14
 #define GE_JOYSTICK_16            15
 #define GE_JOYSTICK_LAST          GE_JOYSTICK_16
+
+
+//if key mouse button was released
+#define GE_RELEASE                0
+
+//The key or mouse button was pressed.
+#define GLFW_PRESS                1
+
+//The key was held down until it repeated.
+
+#define GLFW_REPEAT               2

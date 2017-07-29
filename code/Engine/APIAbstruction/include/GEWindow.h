@@ -32,5 +32,7 @@ namespace GE
 		* close and terminate the Game Engine window
 		*/
 		virtual void CloseGEWindow() = 0;
+
+		virtual auto GetWindowHandle() = 0;
 	};
 }
