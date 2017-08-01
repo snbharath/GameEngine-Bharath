@@ -25,6 +25,8 @@ namespace GE
 
 		virtual void CreateRenderer() = 0;
 
+		virtual void StartRendering() = 0;
+
 		virtual void CloseGEWindow() = 0;
 	};
 }
