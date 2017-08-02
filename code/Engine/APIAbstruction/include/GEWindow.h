@@ -33,6 +33,7 @@ namespace GE
 		*/
 		virtual void CloseGEWindow() = 0;
 
+
 		virtual auto GetWindowHandle() = 0;
 	};
 }
