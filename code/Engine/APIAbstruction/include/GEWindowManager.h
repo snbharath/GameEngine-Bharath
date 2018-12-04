@@ -28,5 +28,4 @@ public:
 
 	static GEWindowManager* Get();
 
-
 };

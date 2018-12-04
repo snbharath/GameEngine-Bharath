@@ -12,10 +12,10 @@ class Object
 private:
 	unsigned long int m_ID;
 
-	static unsigned long int ObjectCounter;
+	//static unsigned long int ObjectCounter;
 public:
 
-	Object()
+	/*Object()
 	{
 		ObjectCounter++;
 		m_ID = ObjectCounter;
@@ -23,8 +23,8 @@ public:
 
 	virtual ~Object() {}
 
-	unsigned long int GetObjectId() { return m_ID; }
+	unsigned long int GetObjectId() { return m_ID; }*/
 	
 };
 
-unsigned long int Object::ObjectCounter = 0;
+//unsigned long int Object::ObjectCounter = 0;

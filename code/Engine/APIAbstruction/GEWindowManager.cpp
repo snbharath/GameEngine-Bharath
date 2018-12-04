@@ -9,6 +9,8 @@
 
 GEWindowManager* GEWindowManager::m_GEWindowManagerInstance = nullptr;
 
+
+
 GEWindowManager* GEWindowManager::Get()
 {
 	if (!m_GEWindowManagerInstance)
@@ -18,6 +20,11 @@ GEWindowManager* GEWindowManager::Get()
 	}
 	return m_GEWindowManagerInstance;
 }
+
+
+
+
+
 
 void GEWindowManager::Init()
 {

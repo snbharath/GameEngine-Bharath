@@ -60,4 +60,10 @@ GEWindow* OpenGLWindow::Get()
 	return s_WindowInstance;
 }
 
+GEWindow* OpenGLWindow::GetCreatedWindowInstance()
+{
+	return nullptr;
+}
+
 #endif // OPENGL
+

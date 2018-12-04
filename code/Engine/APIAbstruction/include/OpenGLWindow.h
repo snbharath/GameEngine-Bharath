@@ -31,7 +31,7 @@ namespace GE
 
 	public:
 
-		//general programming guideline virtual destructor ;) 
+		//general programming guideline, virtual destructor ;) 
 		virtual ~OpenGLWindow() { glfwTerminate(); }
 
 		//Function implementation for window initialization 
@@ -46,8 +46,11 @@ namespace GE
 		//Used to get the OpenGL window instance
 		GLFWwindow* GetGLFWCreatedWindowInstance() const { return m_CreatedWindowInstance; }
 
+		GEWindow* GetCreatedWindowInstance() override; 
+
 		//Create a OpenGL window instance here and return it the base class
 		static GEWindow* Get() ;
+
 	};
 
 }

@@ -34,6 +34,6 @@ namespace GE
 		virtual void CloseGEWindow() = 0;
 
 
-		virtual auto GetWindowHandle() = 0;
+		virtual GEWindow* GetCreatedWindowInstance() = 0;
 	};
 }

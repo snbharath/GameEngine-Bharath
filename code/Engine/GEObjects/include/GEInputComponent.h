@@ -5,10 +5,11 @@
 
 #pragma once
 
-#include "GEWindow.h"
-
 namespace GE
 {
+	//Forward declare
+	class GEWindow;
+
 	class GEInput
 	{
 	public: 

@@ -18,6 +18,7 @@ workspace "GameEngineMain" -- can also be used as workspace("GameEngineMain")
 if( os.get() == "windows" ) then
 configurations { "Debug", "Debug_D3D", "Debug_OpenGL", "Release", "Release_D3D", "Release_OpenGL"}
 platforms {"Win32", "Win64", "XBoxOne"}
+systemversion("10.0.16299.0") -- make sure to change this to whichever version of Windows SDK you have on your computer. if not it defaults to 8.1
 else
 configurations { "Debug", "Release"} -- just OpenGL rendering subsystem only
 platforms {"i386", "amd64"}
