@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
+//#include <cmath>
 #include <iostream>
 #include <thread>
 
@@ -12,16 +12,17 @@ using namespace GE;
 void processInput(GLFWwindow* window)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+	{
 		glfwSetWindowShouldClose(window, true);
+	}
 }
 
 
 int main()
 {
 	//std::thread t1(processInput);
-	
-	//Render loop
-	while (!glfwWindowShouldClose(    reinterpret_cast<OpenGLWindow*>(GEWindowManager::Get()->GetWindowInstance())->GetGLFWCreatedWindowInstance()   ))
+
+	while ( !glfwWindowShouldClose(    reinterpret_cast<OpenGLWindow*>(GEWindowManager::Get()->GetWindowInstance())->GetGLFWCreatedWindowInstance()   ))
 	{
 		//handle input
 		processInput(reinterpret_cast<OpenGLWindow*>(GEWindowManager::Get()->GetWindowInstance())->GetGLFWCreatedWindowInstance());
@@ -33,9 +34,10 @@ int main()
 		//glfw swap buffers and poll IO events(pressed, released, mouse moved etc...)
 		glfwSwapBuffers(reinterpret_cast<OpenGLWindow*>(GEWindowManager::Get()->GetWindowInstance())->GetGLFWCreatedWindowInstance());
 		glfwPollEvents();
+		cout << "Shata" << endl;
 	}
 
-	//terminate all previouslt allocated resources
+	//terminate all previously allocated resources
 	
 	return 0;
 }

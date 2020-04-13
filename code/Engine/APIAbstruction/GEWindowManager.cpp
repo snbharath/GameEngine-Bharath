@@ -9,14 +9,22 @@
 
 GEWindowManager* GEWindowManager::m_GEWindowManagerInstance = nullptr;
 
+GEWindowManager::GEWindowManager()
+{
+	Init();
+}
 
+
+GEWindowManager::~GEWindowManager()
+{
+	delete m_GEWindowManagerInstance;
+}
 
 GEWindowManager* GEWindowManager::Get()
 {
 	if (!m_GEWindowManagerInstance)
 	{
 		m_GEWindowManagerInstance = new GEWindowManager();
-		m_GEWindowManagerInstance->Init();
 	}
 	return m_GEWindowManagerInstance;
 }
@@ -38,13 +46,16 @@ void GEWindowManager::Init()
 
 	//Create an instance of OpenGL Window here
 	//Initialize the window
-	assert(OpenGLWindow::Get()->InitWindow());
+
+	//assert(OpenGLWindow::Get()->InitWindow());
+	OpenGLWindow::GetInstance()->InitWindow();
 
 	// Create a GLFW window here
-	assert(OpenGLWindow::Get()->CreateGEWindow() == 0);
+	//assert(OpenGLWindow::Get()->CreateGEWindow() == 0);
+	OpenGLWindow::GetInstance()->CreateGEWindow();
 
 	//Just make sure that the window instance has been created
-	assert(reinterpret_cast<OpenGLWindow*>(OpenGLWindow::Get())->GetGLFWCreatedWindowInstance() != NULL);
+	//assert(reinterpret_cast<OpenGLWindow*>(OpenGLWindow::Get())->GetGLFWCreatedWindowInstance() != NULL);
 
 
 #else
@@ -62,7 +73,7 @@ GEWindow* GEWindowManager::GetWindowInstance() const
 #ifdef DIRECT3D
 	// create an instance Direct X Window
 #elif OPENGL
-	return OpenGLWindow::Get();
+	return OpenGLWindow::GetInstance();
 #else
 	// placeholder for any other renderer support if I plan to support
 #endif

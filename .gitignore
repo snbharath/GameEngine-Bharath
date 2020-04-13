@@ -26,3 +26,4 @@ Makefile
 code/Engine/obj/
 code/bin/
 code/.codelite/
+.vs

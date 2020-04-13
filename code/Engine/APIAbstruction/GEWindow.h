@@ -1,7 +1,4 @@
-#ifdef OPENGL
-#include <glad/glad.h>
-#include <glfw3.h>
-#endif
+#pragma once
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
@@ -9,11 +6,10 @@
 //its a singleton Game Engine window class
 namespace GE
 {
-	//Abstruction class definition for Render window creation
+	//abstract class definition for Render window creation
 	class GEWindow
 	{
 	private:
-
 
 	public:
 
@@ -33,7 +29,5 @@ namespace GE
 		*/
 		virtual void CloseGEWindow() = 0;
 
-
-		virtual GEWindow* GetCreatedWindowInstance() = 0;
 	};
 }

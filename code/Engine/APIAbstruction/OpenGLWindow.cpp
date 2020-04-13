@@ -2,10 +2,21 @@
 
 #include "OpenGLWindow.h"
 
+
 using namespace GE;
 
-GEWindow* OpenGLWindow::s_WindowInstance = nullptr;
+OpenGLWindow* OpenGLWindow::s_pInstance = nullptr;
 
+OpenGLWindow::OpenGLWindow()
+	:m_pCreatedWindowInstance(nullptr)
+{
+}
+
+OpenGLWindow::~OpenGLWindow()
+{
+	glfwTerminate(); 
+	delete s_pInstance;
+}
 
 int OpenGLWindow::InitWindow()
 {
@@ -28,11 +39,11 @@ void OpenGLWindow::OpenGLFrameBuffersizeCallBack()
 
 int OpenGLWindow::CreateGEWindow()
 {
-	m_CreatedWindowInstance = glfwCreateWindow(800, 600, "GameEngine - by Bharath", NULL, NULL);
+	m_pCreatedWindowInstance = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "GameEngine - by Bharath", NULL, NULL);
 
-	if (m_CreatedWindowInstance != NULL)
+	if (m_pCreatedWindowInstance != NULL)
 	{
-		glfwMakeContextCurrent(m_CreatedWindowInstance);
+		glfwMakeContextCurrent(m_pCreatedWindowInstance);
 		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 		{
 			return 1; // Load all OpenGL function pointers failed
@@ -45,24 +56,19 @@ int OpenGLWindow::CreateGEWindow()
 
 void OpenGLWindow::CloseGEWindow()
 {
-	glfwSetWindowShouldClose(m_CreatedWindowInstance, true);
+	glfwSetWindowShouldClose(m_pCreatedWindowInstance, true);
 
 	glfwTerminate();
 	return;
 }
 
 
-GEWindow* OpenGLWindow::Get()
+OpenGLWindow* OpenGLWindow::GetInstance()
 {
-	if (!s_WindowInstance)
-		s_WindowInstance = new OpenGLWindow();
+	if (!s_pInstance)
+		s_pInstance = new OpenGLWindow();
 
-	return s_WindowInstance;
-}
-
-GEWindow* OpenGLWindow::GetCreatedWindowInstance()
-{
-	return nullptr;
+	return s_pInstance;
 }
 
 #endif // OPENGL

@@ -17,10 +17,11 @@ class GEWindowManager // gonna be inheriting the base Object class later I imple
 private:
 	static GEWindowManager* m_GEWindowManagerInstance;
 
-	GEWindowManager(){
-	}
+	GEWindowManager();
 
 public:
+
+	virtual ~GEWindowManager();
 
 	void Init();
 
