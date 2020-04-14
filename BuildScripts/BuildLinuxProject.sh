@@ -9,10 +9,12 @@
 ###
 
 arr=()
-arr+=("debug_i386") # 32 bit debug build
-arr+=("debug_amd64") # 64 bit debug build
-arr+=("release_i386") # 32 bit release build
-arr+=("release_amd64") # 64 bit release build
+# 64 bit GL build
+arr+=("debug_gl_amd64") 
+arr+=("release_gl_amd64")
+# 64 bit vulkan build
+arr+=("debug_vulkan_amd64")
+arr+=("release_vulkan_amd64")
 
 cd ../code
 
@@ -37,8 +39,8 @@ then
 	echo "Done."
 else
 	echo "The specified configuration isn't supported/available."
-	echo "Supported configurations are debug_i386, debug_amd64, release_i386, release_amd64"
+	echo "Supported configurations are debug_gl_amd64, release_gl_amd64, debug_vulkan_amd64, release_vulkan_amd64"
 	echo "Usage : ./BuildLinuxProject.sh <type-of-build>"
-	echo "Example : ./BuildLinuxProject.sh release_i386"
+	echo "Example : ./BuildLinuxProject.sh debug_gl_amd64"
 	echo "To build all use : ./BuildLinuxProject.sh all"
 fi

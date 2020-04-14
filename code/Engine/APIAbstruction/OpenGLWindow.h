@@ -11,7 +11,7 @@
 
 #include "GEWindow.h"
 #include <glad/glad.h>
-#include <glfw3.h>
+#include "glfw3.h"
 
 namespace GE
 {

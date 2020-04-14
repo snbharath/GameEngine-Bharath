@@ -34,7 +34,6 @@ int main()
 		//glfw swap buffers and poll IO events(pressed, released, mouse moved etc...)
 		glfwSwapBuffers(reinterpret_cast<OpenGLWindow*>(GEWindowManager::Get()->GetWindowInstance())->GetGLFWCreatedWindowInstance());
 		glfwPollEvents();
-		cout << "Shata" << endl;
 	}
 
 	//terminate all previously allocated resources
