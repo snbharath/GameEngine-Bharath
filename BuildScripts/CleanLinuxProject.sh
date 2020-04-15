@@ -36,9 +36,18 @@ then
 	done
 
 	echo "Done."
+elif [ "makefiles" == $1 ]
+then
+	echo -e "Deleting....\n"
+	find ../ -name "Makefile" -type f -print -delete
+	find ../ -name "*.workspace" -type f -print -delete
+	find ../ -name "*.mk" -type f -print -delete
+	find ../ -name "*.project" -type f -print -delete
+	find ../ -name "GameEngine.txt" -type f -print -delete
 else
 	echo "The specified configuration isn't supported/available."
 	echo "Supported configurations are debug_gl_amd64, release_gl_amd64, debug_vulkan_amd64, release_vulkan_amd64" 
+	echo "use 'makefile' option to delete all generated project files"
 	echo "Usage : ./CleanLinuxProject.sh <type-of-build>"
 	echo "Example : ./CleanLinuxProject.sh debug_gl_amd64"
 	echo "To clear all builds use ./CleanLinuxProject.sh all"
