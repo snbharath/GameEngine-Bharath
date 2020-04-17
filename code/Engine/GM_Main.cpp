@@ -1,42 +1,26 @@
-#include <stdio.h>
-#include <stdlib.h>
-//#include <cmath>
-#include <iostream>
-#include <thread>
+#include<iostream>
 
 #include "GEWindowManager.h"
+
+#if defined(OPENGL)
+#include "APIAbstruction/OpenGLWindow.h"
+#endif
 
 using namespace std;
 using namespace GE;
 
-void processInput(GLFWwindow* window)
-{
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-	{
-		glfwSetWindowShouldClose(window, true);
-	}
-}
-
-
 int main()
 {
-	//std::thread t1(processInput);
-
-	while ( !glfwWindowShouldClose(    reinterpret_cast<OpenGLWindow*>(GEWindowManager::Get()->GetWindowInstance())->GetGLFWCreatedWindowInstance()   ))
+	GEWindow * pGameWindow = WindowManager::GetWindowInstance();
+	if (pGameWindow == nullptr)
 	{
-		//handle input
-		processInput(reinterpret_cast<OpenGLWindow*>(GEWindowManager::Get()->GetWindowInstance())->GetGLFWCreatedWindowInstance());
-
-		//render come stuff like color
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
-
-		//glfw swap buffers and poll IO events(pressed, released, mouse moved etc...)
-		glfwSwapBuffers(reinterpret_cast<OpenGLWindow*>(GEWindowManager::Get()->GetWindowInstance())->GetGLFWCreatedWindowInstance());
-		glfwPollEvents();
+		return -1;
 	}
 
-	//terminate all previously allocated resources
-	
+	while (pGameWindow->RenderFrameUpdate())
+	{
+		// do something after rendering the frame
+	}
+
 	return 0;
 }

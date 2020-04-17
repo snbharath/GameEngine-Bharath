@@ -41,6 +41,7 @@ targetdir "./bin/%{cfg.buildcfg}/%{cfg.platform}"
 -- libdirs  ( <follow the target dir pattern> )
 location "Engine"
 files { "Engine/**" }
+flags { "FatalCompileWarnings", "FatalLinkWarnings", "FatalWarnings"}
 
 -- adding in the library directory
 if( platform == "windows" ) then
@@ -54,8 +55,11 @@ end
 
 -- open gl 32 comes with the windows sdk
 if( platform == "windows" ) then
-   links { "opengl32", "glfw3_d" } 
    includedirs { "Engine/**/", "RenderingLibraries/include/**", "Engine/include/opengl_ver/" }
+   configuration "Debug_GL"
+      links { "opengl32", "glfw3_d" }
+   configuration "Release_GL"
+      links { "opengl32", "glfw3" }
 else
    links { "glfw", "dl", "GL" } 
    includedirs { "Engine/**/", "RenderingLibraries/include/**", "Engine/include/opengl_ver/", "/usr/include/GL/"}

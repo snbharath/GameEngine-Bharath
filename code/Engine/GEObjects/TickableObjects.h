@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include <list>
+#include <vector>
 #include "Object.h"
 
 namespace GE
@@ -19,7 +19,7 @@ namespace GE
 		* It actually facilitates the functionality of the game loop
 		* @param - DeltaTime Time since last call or time since last frame
 		*/
-		virtual void Tick(const double& DeltaTime) = 0;
+		virtual void Tick(double DeltaTime) = 0;
 
 		/*
 		* This pure virtual function will be used to check if a game object is ticking or not
@@ -28,7 +28,7 @@ namespace GE
 	};
 
 
-	//Abstruct class which will facilitate the ticking of the game object
+	//Abstract class which will facilitate the ticking of the game object
 	class TickableObject : public TickableObjectBase
 	{
 	private:
@@ -38,9 +38,9 @@ namespace GE
 		* element is already present or not. I'm going to be using find method to check that. I know that it takes O(n) for this 
 		* operation to perform. I'm going to consider this operation until I implement my own methods to do that.
 		*/
-		static std::list<TickableObject*> TickableObjectsList;
+		static std::vector<TickableObject*> s_TickableObjectsList;
 
-		static bool b_IsTickingObjects;
+		static bool s_bIsTickingObjects;
 
 	public:
 
@@ -63,13 +63,13 @@ namespace GE
 		* For now I'm gonna use this as a thread that ticks over all the active objects in the game. This implementation is subject
 		* to changes to accomodate the efficient delta time changes
 		*/
-		static void TickObjects(const double& DeltaTime);
+		static void TickObjects(double DeltaTime);
 
 
-		static bool GetIsTickingObjects() { b_IsTickingObjects; }
+		static bool GetIsTickingObjects() { s_bIsTickingObjects; }
 
-		static void PauseTickingOfAllobjects() { b_IsTickingObjects = false; }
+		static void PauseTickingOfAllobjects() { s_bIsTickingObjects = false; }
 
-		static void ResumeTickingOfAllObjects() { b_IsTickingObjects = true; }
+		static void ResumeTickingOfAllObjects() { s_bIsTickingObjects = true; }
 	};
 }

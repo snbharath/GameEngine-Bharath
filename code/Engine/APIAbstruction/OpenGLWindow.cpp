@@ -7,10 +7,14 @@ using namespace GE;
 
 OpenGLWindow* OpenGLWindow::s_pInstance = nullptr;
 
+//----------------------------------------------------------------------
+
 OpenGLWindow::OpenGLWindow()
-	:m_pCreatedWindowInstance(nullptr)
+	:m_pGLFWwindow(nullptr)
 {
 }
+
+//----------------------------------------------------------------------
 
 OpenGLWindow::~OpenGLWindow()
 {
@@ -18,7 +22,9 @@ OpenGLWindow::~OpenGLWindow()
 	delete s_pInstance;
 }
 
-int OpenGLWindow::InitWindow()
+//----------------------------------------------------------------------
+
+bool OpenGLWindow::InitWindow()
 {
 	// GLFW initialization
 	int retval = glfwInit();
@@ -27,41 +33,89 @@ int OpenGLWindow::InitWindow()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	//glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);  // this is needed for the Max OS X
 
 	return retval;
 }
 
-void OpenGLWindow::OpenGLFrameBuffersizeCallBack()
+//----------------------------------------------------------------------
+
+void OpenGLWindow::OpenGLFrameBuffersizeCallBack(GLFWwindow* pGlfwWindow, int width, int height)
 {
-	glViewport(0, 0, WINDOW_WIDTH, WINDOW_WIDTH);
+	glViewport(0, 0, width, height);
 }
 
-int OpenGLWindow::CreateGEWindow()
-{
-	m_pCreatedWindowInstance = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "GameEngine - by Bharath", NULL, NULL);
+//----------------------------------------------------------------------
 
-	if (m_pCreatedWindowInstance != NULL)
+bool OpenGLWindow::CreateGEWindow()
+{
+	m_pGLFWwindow = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "GameEngine - by Bharath", NULL, NULL);
+	
+	// if failed to create a glfw window then return
+	if (m_pGLFWwindow == nullptr)
 	{
-		glfwMakeContextCurrent(m_pCreatedWindowInstance);
-		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-		{
-			return 1; // Load all OpenGL function pointers failed
-		}
-		return 0;
+		TerminateGEWindow();
+		return false;
 	}
-	else
-		return -1;
+
+	glfwMakeContextCurrent(m_pGLFWwindow);
+	glfwSetFramebufferSizeCallback(m_pGLFWwindow, OpenGLWindow::OpenGLFrameBuffersizeCallBack);
+	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+	{
+		return false; // Load all OpenGL function pointers failed
+	}
+	return true;
 }
+
+//----------------------------------------------------------------------
+
+// returns false if it terminates
+bool OpenGLWindow::RenderFrameUpdate()
+{
+	if(!glfwWindowShouldClose(m_pGLFWwindow))
+	{
+		//handle input
+		ProcessInput(m_pGLFWwindow);
+
+		//render come stuff like color
+		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		//glfw swap buffers and poll IO events(pressed, released, mouse moved etc...)
+		glfwSwapBuffers(m_pGLFWwindow);
+		glfwPollEvents();
+
+		return true;
+	}
+
+	return false;
+}
+
+//----------------------------------------------------------------------
+
+void OpenGLWindow::ProcessInput(GLFWwindow * pWindow)
+{
+	if (glfwGetKey(pWindow, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+	{
+		CloseGEWindow();
+		TerminateGEWindow();
+	}
+}
+
+//----------------------------------------------------------------------
 
 void OpenGLWindow::CloseGEWindow()
 {
-	glfwSetWindowShouldClose(m_pCreatedWindowInstance, true);
-
-	glfwTerminate();
-	return;
+	glfwSetWindowShouldClose(m_pGLFWwindow, true);
 }
 
+//----------------------------------------------------------------------
+
+void OpenGLWindow::TerminateGEWindow()
+{
+	glfwTerminate();
+}
+
+//----------------------------------------------------------------------
 
 OpenGLWindow* OpenGLWindow::GetInstance()
 {
@@ -70,6 +124,8 @@ OpenGLWindow* OpenGLWindow::GetInstance()
 
 	return s_pInstance;
 }
+
+//----------------------------------------------------------------------
 
 #endif // OPENGL
 

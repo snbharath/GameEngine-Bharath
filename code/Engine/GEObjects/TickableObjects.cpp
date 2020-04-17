@@ -12,23 +12,23 @@
 
 using namespace GE;
 
-std::list<TickableObject*> TickableObject::TickableObjectsList;
+std::vector<TickableObject*> TickableObject::s_TickableObjectsList;
+
 //Constructor creates and adds the created object to the list for ticking
 TickableObject::TickableObject()
 {
-	if (std::find(TickableObjectsList.begin(), TickableObjectsList.end(), this) == TickableObjectsList.end())
+	if (std::find(s_TickableObjectsList.begin(), s_TickableObjectsList.end(), this) == s_TickableObjectsList.end())
 	{
-		TickableObjectsList.push_back(this);
+		s_TickableObjectsList.push_back(this);
 	}
 
-	this->Init();
+	Init();
 }
 
 TickableObject::~TickableObject()
 {
-	this->Destroy();
-
-	TickableObjectsList.remove(this);
+	Destroy();
+	//s_TickableObjectsList.remove(this);
 }
 
 //Init function definition.. so far nothing
@@ -44,9 +44,9 @@ void TickableObject::Destroy()
 }
 
 
-void TickableObject::TickObjects(const double& DeltaTime)
+void TickableObject::TickObjects(double DeltaTime)
 {
-	for (std::list<TickableObject*>::const_iterator iterator = TickableObjectsList.begin(); iterator != TickableObjectsList.end(); ++iterator)
+	for (std::vector<TickableObject*>::const_iterator iterator = s_TickableObjectsList.begin(); iterator != s_TickableObjectsList.end(); ++iterator)
 	{
 		// Just iterate over all ticks in here so that it enables all the active objects for processing
 		if ((*iterator)->IsTickable())

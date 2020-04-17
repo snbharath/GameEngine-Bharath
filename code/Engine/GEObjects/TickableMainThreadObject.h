@@ -1,12 +1,12 @@
 /*
 * Game Engine - TickableMainThreadObject.h
-* This is a Tickable object that are going to be ticked by the main thread.
+* This is a Tickable main thread object
 * Potential use cases would be the main render thread, netowrking and game critical components
 */
 
 #pragma once
 
-#include <list>
+#include <vector>
 #include "Object.h"
 
 namespace GE
@@ -39,9 +39,9 @@ namespace GE
 		* element is already present or not. I'm going to be using find method to check that. I know that it takes O(n) for this
 		* operation to perform. I'm going to consider this operation until I implement my own methods to do that.
 		*/
-		static std::list<TickableMainThreadObject*> TickableMainThreadObjectsList;
+		static std::vector<TickableMainThreadObject*> s_TickableMainThreadObjectsList;
 
-		static bool b_IsTickingObjects;
+		static bool s_bIsTickingObjects;
 
 	public:
 
@@ -67,10 +67,10 @@ namespace GE
 		static void TickObjects(const double& DeltaTime);
 
 
-		static bool GetIsTickingObjects() { b_IsTickingObjects; }
+		static bool GetIsTickingObjects() { s_bIsTickingObjects; }
 
-		static void PauseTickingOfAllobjects() { b_IsTickingObjects = false; }
+		static void PauseTickingOfAllobjects() { s_bIsTickingObjects = false; }
 
-		static void ResumeTickingOfAllObjects() { b_IsTickingObjects = true; }
+		static void ResumeTickingOfAllObjects() { s_bIsTickingObjects = true; }
 	};
 }

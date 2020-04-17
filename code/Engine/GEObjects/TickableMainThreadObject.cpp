@@ -12,24 +12,23 @@
 
 using namespace GE;
 
-std::list<TickableMainThreadObject*> TickableMainThreadObject::TickableMainThreadObjectsList;
+std::vector<TickableMainThreadObject*> TickableMainThreadObject::s_TickableMainThreadObjectsList;
 
 //Constructor creates and adds the created object to the list for ticking
 TickableMainThreadObject::TickableMainThreadObject()
 {
-	if (std::find(TickableMainThreadObjectsList.begin(), TickableMainThreadObjectsList.end(), this) == TickableMainThreadObjectsList.end())
+	if (std::find(s_TickableMainThreadObjectsList.begin(), s_TickableMainThreadObjectsList.end(), this) == s_TickableMainThreadObjectsList.end())
 	{
-		TickableMainThreadObjectsList.push_back(this);
+		s_TickableMainThreadObjectsList.push_back(this);
 	}
 
-	this->Init();
+	Init();
 }
 
 TickableMainThreadObject::~TickableMainThreadObject()
 {
-	this->Destroy();
-
-	TickableMainThreadObjectsList.remove(this);
+	Destroy();
+	//TickableMainThreadObjectsList.remove(this);
 }
 
 //Init function definition.. so far nothing
@@ -47,7 +46,7 @@ void TickableMainThreadObject::Destroy()
 
 void TickableMainThreadObject::TickObjects(const double& DeltaTime)
 {
-	for (std::list<TickableMainThreadObject*>::const_iterator iterator = TickableMainThreadObjectsList.begin(); iterator != TickableMainThreadObjectsList.end(); ++iterator)
+	for (std::vector<TickableMainThreadObject*>::const_iterator iterator = s_TickableMainThreadObjectsList.begin(); iterator != s_TickableMainThreadObjectsList.end(); ++iterator)
 	{
 		// Just iterate over all ticks in here so that it enables all the active objects for processing
 		if ((*iterator)->IsTickable())

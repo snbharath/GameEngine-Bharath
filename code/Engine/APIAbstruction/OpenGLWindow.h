@@ -10,7 +10,7 @@
 #ifdef OPENGL
 
 #include "GEWindow.h"
-#include <glad/glad.h>
+#include "glad/glad.h"
 #include "glfw3.h"
 
 namespace GE
@@ -21,10 +21,10 @@ namespace GE
 	private:
 		OpenGLWindow();
 
-		GLFWwindow* m_pCreatedWindowInstance;
+		GLFWwindow * m_pGLFWwindow;
 
 		//Whenever the window is resized this function will be called to resize the frame buffer
-		void OpenGLFrameBuffersizeCallBack();
+		static void OpenGLFrameBuffersizeCallBack(GLFWwindow * pGlfwWindow, int width, int height);
 
 		// this class instance
 		static OpenGLWindow* s_pInstance;
@@ -34,26 +34,24 @@ namespace GE
 		virtual ~OpenGLWindow();
 		
 		// Function implementation for window initialization 
-		int InitWindow() override;
+		bool InitWindow() override;
 
 		// Function implementation for Window creation. returns 0 if everything is Ok, else non-zero
-		int CreateGEWindow() override;
+		bool CreateGEWindow() override;
+
+		// All implementation of Open GL render window will go here
+		bool RenderFrameUpdate() override;
 
 		// Function implementation for Closing OpenGL window. return 0 if closed properly, 1 if closed with some errors
 		void CloseGEWindow() override;
 
-		// Used to get the OpenGL window instance
-		GLFWwindow* GetGLFWCreatedWindowInstance() const;
+		// Terminate GE window
+		void TerminateGEWindow() override;
+
+		void ProcessInput(GLFWwindow*);
 
 		// Create a OpenGL window instance here and return it the base class
-		static OpenGLWindow* GetInstance();
-
+		static OpenGLWindow * GetInstance();
 	};
-
-	// Inline function definitions
-	inline GLFWwindow* OpenGLWindow::GetGLFWCreatedWindowInstance() const
-	{
-		return m_pCreatedWindowInstance;
-	}
 }
 #endif // OPENGL
