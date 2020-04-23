@@ -1,39 +1,32 @@
 /*
-* Author @Bharath - 2017
+* Author @Bharath - 2020
 * This code abstracts the basic window creation of OpenGL
-* 
+*
 */
-
 #pragma once
 
-// if this is for OpenGL, use this rendering API. This enables compiler to choose which window to create
-#ifdef OPENGL
+#ifdef VULKAN
 
 #include "GEWindow.h"
-#include "glad/glad.h"
 #include "glfw3.h"
 
-namespace GE
+namespace GE 
 {
-	//this is going to be a singleton class
-	class OpenGLWindow : public GEWindow
+	class VulkanWindow : public GEWindow
 	{
 	private:
-		OpenGLWindow();
+		VulkanWindow();
 
 		GLFWwindow * m_pGLFWwindow;
 
-		//Whenever the window is resized this function will be called to resize the frame buffer
-		static void OpenGLFrameBufferResizeCallBack(GLFWwindow * pGlfwWindow, int width, int height);
-
-		// this class instance
-		static OpenGLWindow* s_pInstance;
+		// Singleton instance
+		static VulkanWindow* s_pInstance;
 
 	public:
-
-		virtual ~OpenGLWindow();
 		
-		// Function implementation for window initialization 
+		virtual ~VulkanWindow();
+
+		// Function to init window
 		bool InitWindow() override;
 
 		// Function implementation for Window creation. returns 0 if everything is Ok, else non-zero
@@ -51,7 +44,8 @@ namespace GE
 		void ProcessInput(GLFWwindow*);
 
 		// Create a OpenGL window instance here and return it the base class
-		static OpenGLWindow * GetInstance();
+		static VulkanWindow* GetInstance();
 	};
 }
-#endif // OPENGL
+
+#endif // VULKAN

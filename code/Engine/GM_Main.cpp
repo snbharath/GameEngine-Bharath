@@ -4,6 +4,8 @@
 
 #if defined(OPENGL)
 #include "APIAbstruction/OpenGLWindow.h"
+#elif defined(VULKAN)
+#include "APIAbstruction/VulkanWindow.h"
 #endif
 
 using namespace std;

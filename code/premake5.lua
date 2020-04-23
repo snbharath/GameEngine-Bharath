@@ -45,6 +45,7 @@ flags { "FatalCompileWarnings", "FatalLinkWarnings", "FatalWarnings"}
 
 -- adding in the library directory
 if( platform == "windows" ) then
+   --configuration {"Debug_Vulkan", "Release_Vulkan"}
    libdirs { "RenderingLibraries/lib/%{cfg.platform}/**" }
 else
    libdirs { "RenderingLibraries/lib/%{cfg.platform}/**" }
@@ -53,13 +54,21 @@ end
 --files { "Engine/**.c" }
 --files { "Engine/**.cpp" }
 
--- open gl 32 comes with the windows sdk
+-- opengl32 comes with the windows sdk
 if( platform == "windows" ) then
    includedirs { "Engine/**/", "RenderingLibraries/include/**", "Engine/include/opengl_ver/" }
    configuration "Debug_GL"
       links { "opengl32", "glfw3_d" }
    configuration "Release_GL"
       links { "opengl32", "glfw3" }
+   configuration "Debug_Vulkan"
+      libdirs { "C:/VulkanSDK/1.2.135.0/Lib/" }
+      includedirs { "C:/VulkanSDK/1.2.135.0/Include" }
+      links {"vulkan-1.lib", "glfw3_d"}
+   configuration "Release_Vulkan"
+      libdirs { "C:/VulkanSDK/1.2.135.0/Lib/" }
+      includedirs { "C:/VulkanSDK/1.2.135.0/Include" }
+      links {"vulkan-1.lib", "glfw3"}
 else
    links { "glfw", "dl", "GL" } 
    includedirs { "Engine/**/", "RenderingLibraries/include/**", "Engine/include/opengl_ver/", "/usr/include/GL/"}

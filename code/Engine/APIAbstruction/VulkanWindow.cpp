@@ -1,55 +1,48 @@
-#if defined(OPENGL)
+#if defined(VULKAN)
 
-#include "OpenGLWindow.h"
-
+#include "VulkanWindow.h"
 
 using namespace GE;
 
-OpenGLWindow* OpenGLWindow::s_pInstance = nullptr;
+VulkanWindow* VulkanWindow::s_pInstance = nullptr;
 
 //----------------------------------------------------------------------
 
-OpenGLWindow::OpenGLWindow()
+VulkanWindow::VulkanWindow()
 	:m_pGLFWwindow(nullptr)
 {
 }
 
 //----------------------------------------------------------------------
 
-OpenGLWindow::~OpenGLWindow()
+VulkanWindow::~VulkanWindow()
 {
-	glfwTerminate(); 
+	glfwTerminate();
 	delete s_pInstance;
 }
 
 //----------------------------------------------------------------------
 
-bool OpenGLWindow::InitWindow()
+bool VulkanWindow::InitWindow()
 {
 	// GLFW initialization
 	int retval = glfwInit();
 
 	//Choose GLFW Major and Minor VErsion
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	//glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	//glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
 	return retval;
 }
 
 //----------------------------------------------------------------------
 
-void OpenGLWindow::OpenGLFrameBufferResizeCallBack(GLFWwindow* pGlfwWindow, int width, int height)
+bool VulkanWindow::CreateGEWindow()
 {
-	glViewport(0, 0, width, height);
-}
+	m_pGLFWwindow = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Vulkan Window - Bharath", NULL, NULL);
 
-//----------------------------------------------------------------------
-
-bool OpenGLWindow::CreateGEWindow()
-{
-	m_pGLFWwindow = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "OpenGL Window - Bharath", NULL, NULL);
-	
 	// if failed to create a glfw window then return
 	if (m_pGLFWwindow == nullptr)
 	{
@@ -58,30 +51,19 @@ bool OpenGLWindow::CreateGEWindow()
 	}
 
 	glfwMakeContextCurrent(m_pGLFWwindow);
-	glfwSetFramebufferSizeCallback(m_pGLFWwindow, OpenGLWindow::OpenGLFrameBufferResizeCallBack);
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-	{
-		return false; // Load all OpenGL function pointers failed
-	}
+
 	return true;
 }
 
 //----------------------------------------------------------------------
 
 // returns false if it terminates
-bool OpenGLWindow::RenderFrameUpdate()
+bool VulkanWindow::RenderFrameUpdate()
 {
-	if(!glfwWindowShouldClose(m_pGLFWwindow))
+	if (!glfwWindowShouldClose(m_pGLFWwindow))
 	{
 		//handle input
 		ProcessInput(m_pGLFWwindow);
-
-		//render come stuff like color
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
-
-		//glfw swap buffers and poll IO events(pressed, released, mouse moved etc...)
-		glfwSwapBuffers(m_pGLFWwindow);
 		glfwPollEvents();
 
 		return true;
@@ -92,7 +74,7 @@ bool OpenGLWindow::RenderFrameUpdate()
 
 //----------------------------------------------------------------------
 
-void OpenGLWindow::ProcessInput(GLFWwindow * pWindow)
+void VulkanWindow::ProcessInput(GLFWwindow* pWindow)
 {
 	if (glfwGetKey(pWindow, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 	{
@@ -103,29 +85,30 @@ void OpenGLWindow::ProcessInput(GLFWwindow * pWindow)
 
 //----------------------------------------------------------------------
 
-void OpenGLWindow::CloseGEWindow()
+void VulkanWindow::CloseGEWindow()
 {
 	glfwSetWindowShouldClose(m_pGLFWwindow, true);
 }
 
 //----------------------------------------------------------------------
 
-void OpenGLWindow::TerminateGEWindow()
+void VulkanWindow::TerminateGEWindow()
 {
 	glfwTerminate();
 }
 
 //----------------------------------------------------------------------
 
-OpenGLWindow* OpenGLWindow::GetInstance()
+VulkanWindow* VulkanWindow::GetInstance()
 {
 	if (!s_pInstance)
-		s_pInstance = new OpenGLWindow();
+	{
+		s_pInstance = new VulkanWindow();
+	}
 
 	return s_pInstance;
 }
 
 //----------------------------------------------------------------------
 
-#endif // OPENGL
-
+#endif // VULKAN
