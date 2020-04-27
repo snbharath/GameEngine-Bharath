@@ -9,6 +9,7 @@
 
 #include "GEWindow.h"
 #include "glfw3.h"
+#include "../EngineCommonIncludes.h"
 
 namespace GE 
 {
@@ -16,15 +17,17 @@ namespace GE
 	{
 	private:
 		VulkanWindow();
+		~VulkanWindow();
 
+		// GLFW window instance
 		GLFWwindow * m_pGLFWwindow;
+		// Vulkan instance
+		VkInstance m_VulkanInstance;
 
 		// Singleton instance
 		static VulkanWindow* s_pInstance;
 
 	public:
-		
-		virtual ~VulkanWindow();
 
 		// Function to init window
 		bool InitWindow() override;
@@ -45,6 +48,15 @@ namespace GE
 
 		// Create a OpenGL window instance here and return it the base class
 		static VulkanWindow* GetInstance();
+		//Delete singleton instance
+		static bool DeleteInstance();
+
+	private:
+		// Create Vulkan Instance
+		void CreateVulkanInstance();
+
+		// utility function to check available vulkan extensions
+		void PrintVulkanAvailableExtensions(const char ** pGivenExtensionNames, u32 givenExtensionCount);
 	};
 }
 

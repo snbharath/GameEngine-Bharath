@@ -18,8 +18,7 @@ OpenGLWindow::OpenGLWindow()
 
 OpenGLWindow::~OpenGLWindow()
 {
-	glfwTerminate(); 
-	delete s_pInstance;
+	TerminateGEWindow();
 }
 
 //----------------------------------------------------------------------
@@ -48,7 +47,7 @@ void OpenGLWindow::OpenGLFrameBufferResizeCallBack(GLFWwindow* pGlfwWindow, int 
 
 bool OpenGLWindow::CreateGEWindow()
 {
-	m_pGLFWwindow = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "OpenGL Window - Bharath", NULL, NULL);
+	m_pGLFWwindow = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "OpenGL Window - Bharath", nullptr, nullptr);
 	
 	// if failed to create a glfw window then return
 	if (m_pGLFWwindow == nullptr)
@@ -112,6 +111,7 @@ void OpenGLWindow::CloseGEWindow()
 
 void OpenGLWindow::TerminateGEWindow()
 {
+	glfwDestroyWindow(m_pGLFWwindow);
 	glfwTerminate();
 }
 
@@ -123,6 +123,20 @@ OpenGLWindow* OpenGLWindow::GetInstance()
 		s_pInstance = new OpenGLWindow();
 
 	return s_pInstance;
+}
+
+//----------------------------------------------------------------------
+
+bool OpenGLWindow::DeleteInstance()
+{
+	if (s_pInstance == nullptr)
+	{
+		return false;
+	}
+
+	delete s_pInstance;
+	s_pInstance = nullptr;
+	return true;
 }
 
 //----------------------------------------------------------------------

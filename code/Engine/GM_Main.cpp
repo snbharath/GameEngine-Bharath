@@ -1,5 +1,4 @@
 #include<iostream>
-
 #include "GEWindowManager.h"
 
 #if defined(OPENGL)
@@ -24,5 +23,5 @@ int main()
 		// do something after rendering the frame
 	}
 
-	return 0;
+	return WindowManager::DeleteWindowInstance();
 }

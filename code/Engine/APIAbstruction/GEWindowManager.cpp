@@ -39,5 +39,21 @@ namespace GE
 
 		return pWindow;
 	}
+
+	bool WindowManager::DeleteWindowInstance()
+	{
+		bool result = false;
+#if defined(DIRECT3D)
+		// create an instance Direct X Window
+#elif defined (OPENGL)
+		result = OpenGLWindow::DeleteInstance();
+#elif defined (VULKAN)
+		result = VulkanWindow::DeleteInstance();
+#else
+		// placeholder for any other renderer support if I plan to support
+#endif
+
+		return result;
+	}
 }
 // namespace GE

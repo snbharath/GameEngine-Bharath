@@ -14,7 +14,7 @@ namespace GE
 	class WindowManager // gonna be inheriting the base Object class later I implement the Object.h
 	{
 	public:
-
 		static GEWindow * GetWindowInstance();
+		static bool DeleteWindowInstance();
 	};
 }

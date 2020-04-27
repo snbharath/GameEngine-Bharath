@@ -64,11 +64,11 @@ if( platform == "windows" ) then
    configuration "Debug_Vulkan"
       libdirs { "C:/VulkanSDK/1.2.135.0/Lib/" }
       includedirs { "C:/VulkanSDK/1.2.135.0/Include" }
-      links {"vulkan-1.lib", "glfw3_d"}
+      links {"vulkan-1", "glfw3_d"}
    configuration "Release_Vulkan"
       libdirs { "C:/VulkanSDK/1.2.135.0/Lib/" }
       includedirs { "C:/VulkanSDK/1.2.135.0/Include" }
-      links {"vulkan-1.lib", "glfw3"}
+      links {"vulkan-1", "glfw3"}
 else
    links { "glfw", "dl", "GL" } 
    includedirs { "Engine/**/", "RenderingLibraries/include/**", "Engine/include/opengl_ver/", "/usr/include/GL/"}

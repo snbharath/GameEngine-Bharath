@@ -20,6 +20,7 @@ namespace GE
 	{
 	private:
 		OpenGLWindow();
+		~OpenGLWindow();
 
 		GLFWwindow * m_pGLFWwindow;
 
@@ -30,8 +31,6 @@ namespace GE
 		static OpenGLWindow* s_pInstance;
 
 	public:
-
-		virtual ~OpenGLWindow();
 		
 		// Function implementation for window initialization 
 		bool InitWindow() override;
@@ -52,6 +51,8 @@ namespace GE
 
 		// Create a OpenGL window instance here and return it the base class
 		static OpenGLWindow * GetInstance();
+		//Delete singleton instance
+		static bool DeleteInstance();
 	};
 }
 #endif // OPENGL

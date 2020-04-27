@@ -15,7 +15,6 @@ namespace GE
 
 		// Initialize the Game engine window to start the rendering of frames
 		virtual bool InitWindow() = 0;
-
 		
 		// Create a Rendering window here
 		// This creates a render window of Either OpenGL or DirectX
