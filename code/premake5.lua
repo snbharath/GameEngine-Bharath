@@ -62,12 +62,12 @@ if( platform == "windows" ) then
    configuration "Release_GL"
       links { "opengl32", "glfw3" }
    configuration "Debug_Vulkan"
-      libdirs { "C:/VulkanSDK/1.2.135.0/Lib/" }
-      includedirs { "C:/VulkanSDK/1.2.135.0/Include" }
+      libdirs { "C:/VulkanSDK/Lib/" }
+      includedirs { "C:/VulkanSDK/Include" }
       links {"vulkan-1", "glfw3_d"}
    configuration "Release_Vulkan"
-      libdirs { "C:/VulkanSDK/1.2.135.0/Lib/" }
-      includedirs { "C:/VulkanSDK/1.2.135.0/Include" }
+      libdirs { "C:/VulkanSDK/Lib/" }
+      includedirs { "C:/VulkanSDK/Include" }
       links {"vulkan-1", "glfw3"}
 else
    links { "glfw", "dl", "GL" } 

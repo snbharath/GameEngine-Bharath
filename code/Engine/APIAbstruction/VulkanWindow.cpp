@@ -167,7 +167,7 @@ void VulkanWindow::CreateVulkanInstance()
 			instanceCreateInfo.enabledLayerCount = static_cast<u32>(validationLayers.size());
 			instanceCreateInfo.ppEnabledLayerNames = validationLayers.data();
 		}
-		// pValidationLayerInstance->PrintAvailableValidationLayer();
+		pValidationLayerInstance->PrintAvailableValidationLayer();
 	}
 
 	// Vulkan extension support
