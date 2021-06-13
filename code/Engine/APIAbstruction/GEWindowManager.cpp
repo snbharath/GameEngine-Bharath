@@ -5,31 +5,21 @@
 
 #include "GEWindowManager.h"
 
-#if defined (OPENGL)
-#include "OpenGLWindow.h"
-#elif defined (VULKAN)
-#include "VulkanWindow.h"
-#endif
+#include "GEApiAbstructionList.h"
+
 #include <assert.h>
 
 namespace GE
 {
 	GEWindow* WindowManager::GetWindowInstance()
 	{
-#if defined(DIRECT3D)
-		// create an instance Direct X Window
-#elif defined (OPENGL)
-		auto pWindow = OpenGLWindow::GetInstance();
-#elif defined (VULKAN)
-		auto pWindow = VulkanWindow::GetInstance();
-#else
-		// placeholder for any other renderer support if I plan to support
-#endif
+		auto pWindow = CWindow::GetInstance();
 
 		if (pWindow == nullptr)
 		{
 			return nullptr;
 		}
+
 		bool isSuccess = pWindow->InitWindow();
 		isSuccess &= pWindow->CreateGEWindow();
 		if (!isSuccess)
@@ -43,15 +33,7 @@ namespace GE
 	bool WindowManager::DeleteWindowInstance()
 	{
 		bool result = false;
-#if defined(DIRECT3D)
-		// create an instance Direct X Window
-#elif defined (OPENGL)
-		result = OpenGLWindow::DeleteInstance();
-#elif defined (VULKAN)
-		result = VulkanWindow::DeleteInstance();
-#else
-		// placeholder for any other renderer support if I plan to support
-#endif
+		result = CWindow::DeleteInstance();
 
 		return result;
 	}

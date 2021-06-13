@@ -1,11 +1,7 @@
 #include<iostream>
 #include "GEWindowManager.h"
 
-#if defined(OPENGL)
-#include "APIAbstruction/OpenGLWindow.h"
-#elif defined(VULKAN)
-#include "APIAbstruction/VulkanWindow.h"
-#endif
+#include "APIAbstruction/GEApiAbstructionList.h"
 
 using namespace std;
 using namespace GE;
