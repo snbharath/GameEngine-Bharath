@@ -13,5 +13,4 @@ namespace GE
 	typedef signed long long	s64;
 	typedef unsigned long long	u64;
 
-
-}
+};

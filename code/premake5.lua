@@ -32,6 +32,7 @@ local Operating_System
 local vulkan_string = "VULKAN"
 local opengl_string = "OPENGL"
 local directx_string = "DIRECTX"
+local vulkan_sdk = os.getenv("VK_SDK_PATH")
 
 -- Generation of project files starts from here
 project "GameEngine"
@@ -42,6 +43,7 @@ targetdir "./bin/%{cfg.buildcfg}/%{cfg.platform}"
 location "Engine"
 files { "Engine/**" }
 flags { "FatalCompileWarnings", "FatalLinkWarnings", "FatalWarnings"}
+cppdialect "C++20"
 
 -- adding in the library directory
 if( platform == "windows" ) then
@@ -57,23 +59,22 @@ end
 -- opengl32 comes with the windows sdk
 if( platform == "windows" ) then
    includedirs { "Engine/**/", "RenderingLibraries/include/**", "Engine/include/opengl_ver/" }
-   configuration "Debug_GL"
+   filter "Debug_GL"
       links { "opengl32", "glfw3_d" }
-   configuration "Release_GL"
+   filter "Release_GL"
       links { "opengl32", "glfw3" }
-   configuration "Debug_Vulkan"
-      libdirs { "C:/VulkanSDK/Lib/" }
-      includedirs { "C:/VulkanSDK/Include" }
+   filter "Debug_Vulkan"
+      libdirs { vulkan_sdk .. "/Lib/" }
+      includedirs { vulkan_sdk .. "/Include" }
       links {"vulkan-1", "glfw3_d"}
-   configuration "Release_Vulkan"
-      libdirs { "C:/VulkanSDK/Lib/" }
-      includedirs { "C:/VulkanSDK/Include" }
+   filter "Release_Vulkan"
+      libdirs { vulkan_sdk .. "/Lib/" }
+      includedirs { vulkan_sdk .. "/Include" }
       links {"vulkan-1", "glfw3"}
 else
    links { "glfw", "dl", "GL" } 
    includedirs { "Engine/**/", "RenderingLibraries/include/**", "Engine/include/opengl_ver/", "/usr/include/GL/"}
 end
-
 
 -- Degub stuff here
 -- if you want OPENGL by default change "DIRECT3D" to "OPENGL"
