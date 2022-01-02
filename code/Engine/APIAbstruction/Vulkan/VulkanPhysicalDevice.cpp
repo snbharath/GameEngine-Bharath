@@ -1,6 +1,8 @@
 #if defined(VULKAN)
 
 #include "../EngineCommonIncludes.h"
+#include "VulkanValidationLayerWrapper.h"
+
 #include "VulkanPhysicalDevice.h"
 
 using namespace GE;
@@ -13,7 +15,8 @@ VulkanPhysicalDevice* VulkanPhysicalDevice::s_pInstance = nullptr;
 VulkanPhysicalDevice::VulkanPhysicalDevice()
 	: m_numberOfPhysicalDevices(0u)
 	, m_listOfPhysicalDevices(nullptr)
-	, m_physicalDevice(VK_NULL_HANDLE)
+	, m_physicalDevice(nullptr)
+	, m_logicalDevice(nullptr)
 	, m_numberOfQueueFamily(0u)
 	, m_pQueueFamilyProperties(nullptr)
 {}
@@ -22,6 +25,11 @@ VulkanPhysicalDevice::VulkanPhysicalDevice()
 
 VulkanPhysicalDevice::~VulkanPhysicalDevice()
 {
+	if (m_logicalDevice != nullptr)
+	{
+		vkDestroyDevice(m_logicalDevice, nullptr);
+	}
+
 	if (m_listOfPhysicalDevices != nullptr)
 	{
 		delete[] m_listOfPhysicalDevices;
@@ -62,7 +70,13 @@ bool VulkanPhysicalDevice::DeleteInstance()
 
 bool VulkanPhysicalDevice::InitVulkanPhysicalDevice(const VkInstance vkInstance)
 {
-	return SelectAPhysicalDevice(vkInstance);
+	bool isSuccess = true;
+	isSuccess = SelectAPhysicalDevice(vkInstance);
+	if (isSuccess)
+	{
+
+	}
+	return isSuccess;
 }
 
 // ----------------------------------------------------------------------
@@ -190,6 +204,51 @@ QueueFamilyIndices VulkanPhysicalDevice::FindQueueFamilies(VkPhysicalDevice phys
 	}
 
 	return indices;
+}
+
+bool VulkanPhysicalDevice::CreateLogicalDevice()
+{
+	QueueFamilyIndices indices = FindQueueFamilies(GetSelectedVulkanPhysicalDevice());
+
+	VkDeviceQueueCreateInfo queueCreateInfo{};
+	queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+	queueCreateInfo.queueFamilyIndex = indices.graphicsFamily.value();
+	queueCreateInfo.queueCount = 1;
+	queueCreateInfo.pQueuePriorities = &c_queuePriority;
+
+	// Lets just use defaults for now
+	VkPhysicalDeviceFeatures physicalDeviceFeatures{};
+
+	//Create a logical device for the selected physical device
+	VkDeviceCreateInfo logicalDeviceCreateInfo{};
+	logicalDeviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+	logicalDeviceCreateInfo.pQueueCreateInfos = &queueCreateInfo;
+	logicalDeviceCreateInfo.queueCreateInfoCount = 1;
+	logicalDeviceCreateInfo.pEnabledFeatures = &physicalDeviceFeatures;
+	logicalDeviceCreateInfo.enabledExtensionCount = 0;
+
+	// Check if validation layers are enabled
+	VulkanValidationLayerWrapper* pValidationLayerInstance = VulkanValidationLayerWrapper::GetInstance();
+	if (pValidationLayerInstance != nullptr && pValidationLayerInstance->IsEnableValidationLayer())
+	{
+		if (pValidationLayerInstance->CheckValidationLayerSupport() == false)
+		{
+			cerr << "Validation layer requested, is not available" << endl;
+			logicalDeviceCreateInfo.enabledLayerCount = 0;
+		}
+		else
+		{
+			auto validationLayers = pValidationLayerInstance->GetValidationLayers();
+			logicalDeviceCreateInfo.enabledLayerCount = static_cast<u32>(validationLayers.size());
+			logicalDeviceCreateInfo.ppEnabledLayerNames = validationLayers.data();
+		}
+	}
+
+	if (vkCreateDevice(GetSelectedVulkanPhysicalDevice(), &logicalDeviceCreateInfo, nullptr, &m_logicalDevice) != VK_SUCCESS) {
+		throw std::runtime_error("failed to create logical device!");
+	}
+
+	vkGetDeviceQueue(m_logicalDevice, indices.graphicsFamily.value(), 0, &m_graphicsQueue);
 }
 
 #endif // VULKAN

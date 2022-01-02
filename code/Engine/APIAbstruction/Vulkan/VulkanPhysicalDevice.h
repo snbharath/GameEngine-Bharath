@@ -12,6 +12,8 @@
 
 namespace GE
 {
+	const float c_queuePriority = 1.0f;
+
 	// a struct to hold the queue family index provided by vulkan
 	struct QueueFamilyIndices
 	{
@@ -32,6 +34,10 @@ namespace GE
 			u32 m_numberOfPhysicalDevices;
 			VkPhysicalDevice* m_listOfPhysicalDevices;
 			VkPhysicalDevice m_physicalDevice;
+
+			VkDevice m_logicalDevice;
+
+			VkQueue m_graphicsQueue;
 
 			// Queue family data
 			u32 m_numberOfQueueFamily; // for selected devices ofcourse!
@@ -60,6 +66,8 @@ namespace GE
 			bool IsDeviceSuitable(VkPhysicalDevice device);
 
 			void GetListOfAllDeviceNames(VkPhysicalDevice const* devices, u32 numberOfDevices, std::vector<std::string>& deviceNames);
+
+			bool CreateLogicalDevice();
 
 			// Find the queue families for the selected device
 			QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice physicalDevice);
