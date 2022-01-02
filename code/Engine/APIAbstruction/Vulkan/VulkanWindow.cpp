@@ -15,6 +15,7 @@ VulkanWindow::VulkanWindow()
 	: m_pGLFWwindow(nullptr)
 	, m_VulkanInstance(nullptr)
 	, m_pVulkanPhysicalDevice(nullptr)
+	, m_windowSurface(nullptr)
 {
 }
 
@@ -57,6 +58,7 @@ bool VulkanWindow::CreateGEWindow()
 
 	glfwMakeContextCurrent(m_pGLFWwindow);
 
+	cout << "[VulkanWindow::CreateGEWindow] - Creating a Vulkan instance. Line: " << __LINE__ << endl;
 	bool isSuccessful = CreateVulkanInstance();
 	
 	// Vulkan instance creation failed
@@ -65,8 +67,18 @@ bool VulkanWindow::CreateGEWindow()
 		return false;
 	}
 
-	// Perform physical device selection
-	isSuccessful = m_pVulkanPhysicalDevice->InitVulkanPhysicalDevice(m_VulkanInstance);
+	cout << "[VulkanWindow::CreateGEWindow] - Creating window surface. Line: " << __LINE__ << endl;
+	if (isSuccessful)
+	{
+		isSuccessful = CreateWindowSurface();
+	}
+
+	if (isSuccessful)
+	{
+		cout << "[VulkanWindow::CreateGEWindow] - Initializing Vulkan Physical device. Line: " << __LINE__ << endl;
+		// Perform physical device selection
+		isSuccessful = m_pVulkanPhysicalDevice->InitVulkanPhysicalDevice();
+	}
 
 	return isSuccessful;
 }
@@ -112,6 +124,12 @@ void VulkanWindow::TerminateGEWindow()
 {
 	VulkanValidationLayerWrapper::DeleteInstance();
 	VulkanPhysicalDevice::DeleteInstance();
+
+	// window surface instance
+	if(m_windowSurface != nullptr)
+	{
+		vkDestroySurfaceKHR(m_VulkanInstance, m_windowSurface, nullptr);
+	}
 
 	assert(m_VulkanInstance != nullptr);
 	vkDestroyInstance(m_VulkanInstance, nullptr);
@@ -247,5 +265,18 @@ void VulkanWindow::PrintVulkanAvailableExtensions(const char ** pGivenExtensionN
 		std::cout << extension.extensionName << ", Version : " << extension.specVersion << endl;
 	}
 }
+
+//----------------------------------------------------------------------
+
+bool VulkanWindow::CreateWindowSurface()
+{
+	if (glfwCreateWindowSurface(GetVulkanInstance(), GetGLFWwindow(), nullptr, &m_windowSurface) != VK_SUCCESS)
+	{
+		throw std::runtime_error("failed to create window surface!");
+	}
+	return true;
+}
+
+//----------------------------------------------------------------------
 
 #endif // VULKAN

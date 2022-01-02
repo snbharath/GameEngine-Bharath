@@ -90,7 +90,7 @@ void VulkanValidationLayerWrapper::PrintAvailableValidationLayer()
 	cout << endl;
 }
 
-const vector<const char*> VulkanValidationLayerWrapper::GetValidationLayers() const
+const vector<const char*>& VulkanValidationLayerWrapper::GetValidationLayers() const
 {
 	return m_cValidationLayers;
 }

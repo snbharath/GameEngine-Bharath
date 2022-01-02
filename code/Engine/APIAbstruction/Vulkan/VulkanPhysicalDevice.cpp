@@ -2,6 +2,7 @@
 
 #include "../EngineCommonIncludes.h"
 #include "VulkanValidationLayerWrapper.h"
+#include "VulkanWindow.h"
 
 #include "VulkanPhysicalDevice.h"
 
@@ -15,11 +16,15 @@ VulkanPhysicalDevice* VulkanPhysicalDevice::s_pInstance = nullptr;
 VulkanPhysicalDevice::VulkanPhysicalDevice()
 	: m_numberOfPhysicalDevices(0u)
 	, m_listOfPhysicalDevices(nullptr)
-	, m_physicalDevice(nullptr)
-	, m_logicalDevice(nullptr)
-	, m_numberOfQueueFamily(0u)
-	, m_pQueueFamilyProperties(nullptr)
-{}
+	, m_physicalDevice(VK_NULL_HANDLE)
+	, m_logicalDevice(VK_NULL_HANDLE)
+{
+	// initialize the queues
+	for (u32 i = 0; i < static_cast<u32>(QueueFamilies::MAX); i++)
+	{
+		m_queues.push_back(nullptr);
+	}
+}
 
 // ----------------------------------------------------------------------
 
@@ -33,10 +38,6 @@ VulkanPhysicalDevice::~VulkanPhysicalDevice()
 	if (m_listOfPhysicalDevices != nullptr)
 	{
 		delete[] m_listOfPhysicalDevices;
-	}
-	if (m_pQueueFamilyProperties != nullptr)
-	{
-		delete[] m_pQueueFamilyProperties;
 	}
 }
 
@@ -68,14 +69,29 @@ bool VulkanPhysicalDevice::DeleteInstance()
 
 // ----------------------------------------------------------------------
 
-bool VulkanPhysicalDevice::InitVulkanPhysicalDevice(const VkInstance vkInstance)
+bool VulkanPhysicalDevice::InitVulkanPhysicalDevice()
 {
+	VulkanWindow* pVulkanWindow = VulkanWindow::GetInstance();
+	assert(pVulkanWindow != nullptr);
+	if (pVulkanWindow == nullptr)
+	{
+		return false;
+	}
+
 	bool isSuccess = true;
-	isSuccess = SelectAPhysicalDevice(vkInstance);
+	
 	if (isSuccess)
 	{
-
+		cout << "[VulkanPhysicalDevice::InitVulkanPhysicalDevice] - Selecting a physical device. Line: " << __LINE__ << endl;
+		isSuccess = SelectAPhysicalDevice(pVulkanWindow->GetVulkanInstance());
 	}
+
+	if (isSuccess)
+	{
+		cout << "[VulkanPhysicalDevice::InitVulkanPhysicalDevice] - Creating a logical device. Line: " << __LINE__ << endl;
+		isSuccess = CreateLogicalDevice();
+	}
+
 	return isSuccess;
 }
 
@@ -178,25 +194,35 @@ void VulkanPhysicalDevice::GetListOfAllDeviceNames(VkPhysicalDevice const* devic
 
 QueueFamilyIndices VulkanPhysicalDevice::FindQueueFamilies(VkPhysicalDevice physicalDevice)
 {
+	VulkanWindow* pVulkanWindow = VulkanWindow::GetInstance();
+	assert(pVulkanWindow);
+
 	QueueFamilyIndices indices;
 	
-	u32 queueFamilycount = 0;
-	vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &m_numberOfQueueFamily, nullptr);
-	if (m_numberOfQueueFamily == 0)
+	u32 queueFamilyCount = 0;
+	vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, nullptr);
+	if (queueFamilyCount == 0)
 	{
 		assert(false); // What the hell ? 
 	}
 
-	m_pQueueFamilyProperties = new VkQueueFamilyProperties[queueFamilycount];
-	assert(m_pQueueFamilyProperties != nullptr);
-	vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &m_numberOfQueueFamily, m_pQueueFamilyProperties);
+	std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
+	vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, queueFamilies.data());
 
-	for (u32 i = 0; i < m_numberOfQueueFamily; i++)
+	for (u32 i = 0; i < queueFamilyCount; i++)
 	{
-		if (m_pQueueFamilyProperties[i].queueFlags & VK_QUEUE_GRAPHICS_BIT)
+		if (queueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT)
 		{
-			indices.graphicsFamily = i;
+			indices.m_queueFamilies[static_cast<u32>(QueueFamilies::GRAPHICS)] = i;
 		}
+		
+		VkBool32 presentSupport = false;
+		auto res = vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, i, pVulkanWindow->GetWindowSurface(), &presentSupport);
+		if (presentSupport)
+		{
+			indices.m_queueFamilies[static_cast<u32>(QueueFamilies::PRESENTATION)] = i;
+		}
+
 		if (indices.isComplete())
 		{
 			break;
@@ -206,15 +232,22 @@ QueueFamilyIndices VulkanPhysicalDevice::FindQueueFamilies(VkPhysicalDevice phys
 	return indices;
 }
 
+//----------------------------------------------------------------------
+
 bool VulkanPhysicalDevice::CreateLogicalDevice()
 {
 	QueueFamilyIndices indices = FindQueueFamilies(GetSelectedVulkanPhysicalDevice());
 
-	VkDeviceQueueCreateInfo queueCreateInfo{};
-	queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-	queueCreateInfo.queueFamilyIndex = indices.graphicsFamily.value();
-	queueCreateInfo.queueCount = 1;
-	queueCreateInfo.pQueuePriorities = &c_queuePriority;
+	vector<VkDeviceQueueCreateInfo> queueCreateInfos;
+	for (u32 i = 0; i < static_cast<u32>(QueueFamilies::MAX); i++)
+	{
+		VkDeviceQueueCreateInfo queueCreateInfo{};
+		queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+		queueCreateInfo.queueFamilyIndex = indices.m_queueFamilies[i].value();
+		queueCreateInfo.queueCount = 1;
+		queueCreateInfo.pQueuePriorities = &c_queuePriority;
+		queueCreateInfos.push_back(queueCreateInfo);
+	}
 
 	// Lets just use defaults for now
 	VkPhysicalDeviceFeatures physicalDeviceFeatures{};
@@ -222,8 +255,8 @@ bool VulkanPhysicalDevice::CreateLogicalDevice()
 	//Create a logical device for the selected physical device
 	VkDeviceCreateInfo logicalDeviceCreateInfo{};
 	logicalDeviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-	logicalDeviceCreateInfo.pQueueCreateInfos = &queueCreateInfo;
-	logicalDeviceCreateInfo.queueCreateInfoCount = 1;
+	logicalDeviceCreateInfo.pQueueCreateInfos = queueCreateInfos.data();
+	logicalDeviceCreateInfo.queueCreateInfoCount = static_cast<u32>(queueCreateInfos.size());	
 	logicalDeviceCreateInfo.pEnabledFeatures = &physicalDeviceFeatures;
 	logicalDeviceCreateInfo.enabledExtensionCount = 0;
 
@@ -231,24 +264,30 @@ bool VulkanPhysicalDevice::CreateLogicalDevice()
 	VulkanValidationLayerWrapper* pValidationLayerInstance = VulkanValidationLayerWrapper::GetInstance();
 	if (pValidationLayerInstance != nullptr && pValidationLayerInstance->IsEnableValidationLayer())
 	{
-		if (pValidationLayerInstance->CheckValidationLayerSupport() == false)
-		{
-			cerr << "Validation layer requested, is not available" << endl;
-			logicalDeviceCreateInfo.enabledLayerCount = 0;
-		}
-		else
-		{
-			auto validationLayers = pValidationLayerInstance->GetValidationLayers();
-			logicalDeviceCreateInfo.enabledLayerCount = static_cast<u32>(validationLayers.size());
-			logicalDeviceCreateInfo.ppEnabledLayerNames = validationLayers.data();
-		}
+		auto validationLayers = pValidationLayerInstance->GetValidationLayers();
+		logicalDeviceCreateInfo.enabledLayerCount = static_cast<u32>(validationLayers.size());
+		logicalDeviceCreateInfo.ppEnabledLayerNames = validationLayers.data();
+	}
+	else
+	{
+		cerr << "Validation layer requested, is not available" << endl;
+		logicalDeviceCreateInfo.enabledLayerCount = 0;
+		return false;
 	}
 
-	if (vkCreateDevice(GetSelectedVulkanPhysicalDevice(), &logicalDeviceCreateInfo, nullptr, &m_logicalDevice) != VK_SUCCESS) {
+	if (vkCreateDevice(m_physicalDevice, &logicalDeviceCreateInfo, nullptr, &m_logicalDevice) != VK_SUCCESS)
+	{
 		throw std::runtime_error("failed to create logical device!");
 	}
 
-	vkGetDeviceQueue(m_logicalDevice, indices.graphicsFamily.value(), 0, &m_graphicsQueue);
+	for (u32 i = 0; i < static_cast<u32>(QueueFamilies::MAX); i++)
+	{
+		vkGetDeviceQueue(m_logicalDevice, indices.m_queueFamilies[i].value(), 0, &m_queues[i]);
+	}
+
+	return true;
 }
+
+//----------------------------------------------------------------------
 
 #endif // VULKAN

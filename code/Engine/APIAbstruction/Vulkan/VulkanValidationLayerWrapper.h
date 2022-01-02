@@ -31,7 +31,7 @@ namespace GE
 
 		void PrintAvailableValidationLayer();
 
-		const vector<const char*> GetValidationLayers() const;
+		const vector<const char*>& GetValidationLayers() const;
 	};
 
 	// inline functions

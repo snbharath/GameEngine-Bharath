@@ -12,15 +12,37 @@
 
 namespace GE
 {
+	enum class QueueFamilies : u32
+	{
+		GRAPHICS,
+		PRESENTATION,
+		MAX
+	};
+
 	const float c_queuePriority = 1.0f;
 
 	// a struct to hold the queue family index provided by vulkan
 	struct QueueFamilyIndices
 	{
-		std::optional<u32> graphicsFamily;
+		vector < optional<u32>> m_queueFamilies;
 
-		bool isComplete() {
-			return graphicsFamily.has_value();
+		QueueFamilyIndices()
+		{
+			for (u32 i = 0; i < static_cast<u32>(QueueFamilies::MAX); i++)
+			{
+				m_queueFamilies.push_back(optional<u32>());
+			}
+		}
+
+		bool isComplete()
+		{
+			bool res = true;
+			for (u32 i = 0; i < static_cast<u32>(QueueFamilies::MAX); i++)
+			{
+				res &= m_queueFamilies[i].has_value();
+			}
+			
+			return res;
 		}
 	};
 
@@ -35,14 +57,11 @@ namespace GE
 			VkPhysicalDevice* m_listOfPhysicalDevices;
 			VkPhysicalDevice m_physicalDevice;
 
+			// Logical device instance
 			VkDevice m_logicalDevice;
-
-			VkQueue m_graphicsQueue;
-
-			// Queue family data
-			u32 m_numberOfQueueFamily; // for selected devices ofcourse!
-			VkQueueFamilyProperties* m_pQueueFamilyProperties;
 			
+			vector<VkQueue> m_queues;
+
 			static VulkanPhysicalDevice* s_pInstance;
 
 		public:
@@ -52,11 +71,11 @@ namespace GE
 			static bool DeleteInstance();
 
 			// Select vulkan physical device and select queue families
-			bool InitVulkanPhysicalDevice(const VkInstance pInstance);
+			bool InitVulkanPhysicalDevice();
 
 			u32 GetNumberOfVulkanPhysicalDevices() const;
 
-			VkPhysicalDevice GetSelectedVulkanPhysicalDevice() const;
+			const VkPhysicalDevice GetSelectedVulkanPhysicalDevice();
 
 		private:
 			// Perform a physical device selection
@@ -67,6 +86,7 @@ namespace GE
 
 			void GetListOfAllDeviceNames(VkPhysicalDevice const* devices, u32 numberOfDevices, std::vector<std::string>& deviceNames);
 
+			// Create a logical device for the selected physical device
 			bool CreateLogicalDevice();
 
 			// Find the queue families for the selected device
@@ -82,7 +102,7 @@ namespace GE
 
 	//--------------------------------------------------------------------------------------
 
-	inline VkPhysicalDevice VulkanPhysicalDevice::GetSelectedVulkanPhysicalDevice() const
+	inline const VkPhysicalDevice VulkanPhysicalDevice::GetSelectedVulkanPhysicalDevice()
 	{
 		return m_physicalDevice;
 	}

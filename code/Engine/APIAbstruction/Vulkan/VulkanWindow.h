@@ -25,8 +25,11 @@ namespace GE
 		// Vulkan instance
 		VkInstance	m_VulkanInstance;
 
+		// vulkan physical device
 		VulkanPhysicalDevice* m_pVulkanPhysicalDevice;
 
+		// Window surface creation
+		VkSurfaceKHR m_windowSurface;
 		// Singleton instance
 		static VulkanWindow* s_pInstance;
 
@@ -49,6 +52,15 @@ namespace GE
 
 		void ProcessInput(GLFWwindow*);
 
+		// Get GLFW window
+		GLFWwindow* GetGLFWwindow() const;
+
+		// Get Vulkan Instance
+		const VkInstance GetVulkanInstance();
+
+		// Get created window surface
+		const VkSurfaceKHR GetWindowSurface();
+
 		// Create a OpenGL window instance here and return it the base class
 		static VulkanWindow* GetInstance();
 		//Delete singleton instance
@@ -60,7 +72,33 @@ namespace GE
 
 		// utility function to check available vulkan extensions
 		void PrintVulkanAvailableExtensions(const char ** pGivenExtensionNames, u32 givenExtensionCount);
+
+		// A window surface is required to render the frames on to.
+		bool CreateWindowSurface();
 	};
+
+	// ----------------------------------------------------------------------------------
+	
+	inline GLFWwindow* VulkanWindow::GetGLFWwindow() const 
+	{
+		return m_pGLFWwindow;
+	}
+
+	// ----------------------------------------------------------------------------------
+
+	inline const VkInstance VulkanWindow::GetVulkanInstance()
+	{
+		return m_VulkanInstance;
+	}
+
+	// ----------------------------------------------------------------------------------
+
+	inline const VkSurfaceKHR VulkanWindow::GetWindowSurface()
+	{
+		return m_windowSurface;
+	}
+
+	// ----------------------------------------------------------------------------------
 }
 
 #endif // VULKAN
