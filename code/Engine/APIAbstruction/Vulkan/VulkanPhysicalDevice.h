@@ -21,6 +21,8 @@ namespace GE
 
 	const float c_queuePriority = 1.0f;
 
+	//---------------------------------------------------------------------------
+
 	// a struct to hold the queue family index provided by vulkan
 	struct QueueFamilyIndices
 	{
@@ -45,6 +47,23 @@ namespace GE
 			return res;
 		}
 	};
+	
+	//---------------------------------------------------------------------------
+	
+	// Swap chain support details
+	struct SwapChainSupportDetails
+	{
+		// Basic Surface Capabilities. (min/max) number of images in swap chain, (min/max) width and height of images
+		VkSurfaceCapabilitiesKHR capabilities;
+		
+		// Pixel format , color space
+		vector<VkSurfaceFormatKHR> formats;
+
+		// Available presentation modes
+		vector<VkPresentModeKHR> presentModes;
+	};
+
+	//---------------------------------------------------------------------------
 
 	class VulkanPhysicalDevice
 	{
@@ -62,6 +81,16 @@ namespace GE
 			
 			vector<VkQueue> m_queues;
 
+			// Swap Chain handle
+			VkSwapchainKHR m_swapChain;
+
+			// Holder for swap chain images
+			vector<VkImage> m_swapChainImages;
+
+			VkFormat m_swapChainImageFormat;
+			VkExtent2D m_swapChainExtent;
+
+
 			static VulkanPhysicalDevice* s_pInstance;
 
 		public:
@@ -77,6 +106,8 @@ namespace GE
 
 			const VkPhysicalDevice GetSelectedVulkanPhysicalDevice();
 
+			bool checkDeviceExtensionSupport(VkPhysicalDevice physicalDevice);
+
 		private:
 			// Perform a physical device selection
 			bool SelectAPhysicalDevice(const VkInstance& pInstance);
@@ -89,8 +120,24 @@ namespace GE
 			// Create a logical device for the selected physical device
 			bool CreateLogicalDevice();
 
+			// Query for swap chain support for a given physical device
+			SwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice physicalDevice);
+
+			// Choose swap surface formats, color depth
+			VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const vector<VkSurfaceFormatKHR>& availableSurfaceFormats);
+
+			// Presentation modes, conditions for swapping images to the screen
+			VkPresentModeKHR ChooseSwapPresentMode(const vector<VkPresentModeKHR>& availablePresentModes);
+
+			// Swap extent, resolution of images in swap chain
+			VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
+
 			// Find the queue families for the selected device
 			QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice physicalDevice);
+
+			// Create a swap chain with the selected parameters
+			bool CreateSwapChain();
+
 	};
 
 	//--------------------------------------------------------------------------------------
