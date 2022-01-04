@@ -42,12 +42,18 @@ VulkanPhysicalDevice::VulkanPhysicalDevice()
 
 VulkanPhysicalDevice::~VulkanPhysicalDevice()
 {
-	if (m_swapChain != nullptr)
-	{
-		vkDestroySwapchainKHR(m_logicalDevice, m_swapChain, nullptr);
-	}
 	if (m_logicalDevice != nullptr)
 	{
+		for (auto imageView : m_swapChainImageViews)
+		{
+			vkDestroyImageView(m_logicalDevice, imageView, nullptr);
+		}
+
+		if (m_swapChain != nullptr)
+		{
+			vkDestroySwapchainKHR(m_logicalDevice, m_swapChain, nullptr);
+		}
+		
 		vkDestroyDevice(m_logicalDevice, nullptr);
 	}
 
@@ -112,6 +118,12 @@ bool VulkanPhysicalDevice::InitVulkanPhysicalDevice()
 	{
 		cout << "[VulkanPhysicalDevice::InitVulkanPhysicalDevice] - Creating a Swap Chain. Line: " << __LINE__ << endl;
 		isSuccess = CreateSwapChain();
+	}
+
+	if (isSuccess)
+	{
+		cout << "[VulkanPhysicalDevice::InitVulkanPhysicalDevice] - Creating Image views. Line: " << __LINE__ << endl;
+		isSuccess = CreateImageViews();
 	}
 
 	return isSuccess;
@@ -527,4 +539,48 @@ bool VulkanPhysicalDevice::CreateSwapChain()
 }
 
 //----------------------------------------------------------------------
+
+bool VulkanPhysicalDevice::CreateImageViews()
+{
+	// Resize to fit all the VkImage objects
+	m_swapChainImageViews.resize(m_swapChainImages.size());
+
+	bool ret = true;
+
+	for (u32 i = 0; i < m_swapChainImages.size(); i++)
+	{
+		VkImageViewCreateInfo imageViewCreateInfo{};
+		imageViewCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+		imageViewCreateInfo.image = m_swapChainImages[i];
+
+		// this allows us to treat images as 1D, 2D, 3D or cube maps
+		imageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+		imageViewCreateInfo.format = m_swapChainImageFormat;
+
+		// setup components
+		imageViewCreateInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
+		imageViewCreateInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
+		imageViewCreateInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
+		imageViewCreateInfo.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
+
+		// The subsource range field describes what the images's purpose is and which part of image should
+		// be accessed. we use our images as color targets without any mipmapping or multiple layers
+		imageViewCreateInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+		imageViewCreateInfo.subresourceRange.baseMipLevel = 0;
+		imageViewCreateInfo.subresourceRange.levelCount = 1;
+		imageViewCreateInfo.subresourceRange.baseArrayLayer = 0;
+		imageViewCreateInfo.subresourceRange.layerCount = 1;
+
+		if (vkCreateImageView(m_logicalDevice, &imageViewCreateInfo, nullptr, &m_swapChainImageViews[i]) != VK_SUCCESS)
+		{
+			throw std::runtime_error("failed to create image views!");
+			ret &= false;
+		}
+	}
+
+	return ret;
+}
+
+//----------------------------------------------------------------------
+
 #endif // VULKAN

@@ -90,6 +90,7 @@ namespace GE
 			VkFormat m_swapChainImageFormat;
 			VkExtent2D m_swapChainExtent;
 
+			vector<VkImageView> m_swapChainImageViews;
 
 			static VulkanPhysicalDevice* s_pInstance;
 
@@ -138,6 +139,8 @@ namespace GE
 			// Create a swap chain with the selected parameters
 			bool CreateSwapChain();
 
+			// Create image views for all the VkImages in the swap chain buffer
+			bool CreateImageViews();
 	};
 
 	//--------------------------------------------------------------------------------------
