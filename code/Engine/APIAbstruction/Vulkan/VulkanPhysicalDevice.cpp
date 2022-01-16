@@ -176,7 +176,7 @@ bool VulkanPhysicalDevice::SelectAPhysicalDevice(const VkInstance& pInstance)
 			int numberEntered = static_cast<int>(m_numberOfPhysicalDevices);
 			while (!(numberEntered >= 0 && numberEntered < static_cast<int>(m_numberOfPhysicalDevices)))
 			{
-				cout << "Select a device of type 2 : ";
+				cout << "Select a device of type \'1\'(Integrated GPU) or \'2\'(Discrete GPU) : ";
 				cin >> numberEntered;
 				if (numberEntered >= 0 && numberEntered < static_cast<int>(m_numberOfPhysicalDevices) && IsDeviceSuitable(m_listOfPhysicalDevices[numberEntered]))
 				{
@@ -214,8 +214,15 @@ bool VulkanPhysicalDevice::IsDeviceSuitable(VkPhysicalDevice device)
 		isSwapChainAdequate = !details.formats.empty() && !details.presentModes.empty();
 	}
 
+	// Since Raspberry pi has integrated GPU, approve the device type in the device selection.
+	#if defined(PC)
+	bool isDeviceTypeApproved = deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU;
+	#else // rpi or linux
+	bool isDeviceTypeApproved = deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU;
+	#endif
+	
 	return (
-		(deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU) &&
+		(isDeviceTypeApproved) &&
 		(deviceFeatures.geometryShader) &&
 		(indices.isComplete())&&
 		(extensionsSupported) &&
@@ -230,9 +237,16 @@ void VulkanPhysicalDevice::GetListOfAllDeviceNames(VkPhysicalDevice const* devic
 	for (u32 i = 0; i < numberOfDevices; i++)
 	{
 		char buf[128];
+		memset(buf, 0, 128);
+		
 		vkGetPhysicalDeviceProperties(devices[i], &deviceProperties);
+		#if defined(PC)
 		sprintf_s(buf, "Name : %s - type : %d", deviceProperties.deviceName, static_cast<int>(deviceProperties.deviceType));
-		deviceNames.push_back(buf);
+		#elif defined(LINUX)
+		sprintf(buf, "Name : %s - type : %d", deviceProperties.deviceName, static_cast<int>(deviceProperties.deviceType));
+		#endif
+		
+		deviceNames[i] = buf;
 	}
 }
 
@@ -317,9 +331,7 @@ bool VulkanPhysicalDevice::CreateLogicalDevice()
 	}
 	else
 	{
-		cerr << "Validation layer requested, is not available" << endl;
 		logicalDeviceCreateInfo.enabledLayerCount = 0;
-		return false;
 	}
 
 	if (vkCreateDevice(m_physicalDevice, &logicalDeviceCreateInfo, nullptr, &m_logicalDevice) != VK_SUCCESS)

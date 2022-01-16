@@ -9,13 +9,25 @@ newaction {
       print("done.")
    end
 }
-
+----------------------------------------------------------------------------------------
 
 -- premake5.lua
 workspace "GameEngineMain" -- can also be used as workspace("GameEngineMain")
 
 -- record the platform
 platform = os.target()
+
+----------------------------------------------------------------------------------------
+
+local lang = "C++"
+local Operating_System
+local vulkan_string = "VULKAN"
+local opengl_string = "OPENGL"
+local directx_string = "DIRECTX"
+local vulkan_sdk = os.getenv("VK_SDK_PATH")
+local machine_type = os.getenv("ARCH_TYPE")
+
+----------------------------------------------------------------------------------------
 
 --platform dependent configuration files
 if( platform == "windows" ) then
@@ -24,15 +36,14 @@ if( platform == "windows" ) then
    systemversion("10.0.18362.0") -- make sure to change this to whichever version of Windows SDK you have on your computer. if not it defaults to 8.1
 else
    configurations { "Debug_GL", "Debug_Vulkan", "Release_GL", "Release_Vulkan" } -- just OpenGL rendering subsystem only
-   platforms {"amd64"}
+   if(machine_type == "aarch64") then
+      platforms {"arm64"}
+   else
+      platforms {"amd64"}
+   end
 end
 
-local lang = "C++"
-local Operating_System
-local vulkan_string = "VULKAN"
-local opengl_string = "OPENGL"
-local directx_string = "DIRECTX"
-local vulkan_sdk = os.getenv("VK_SDK_PATH")
+----------------------------------------------------------------------------------------
 
 -- Generation of project files starts from here
 project "GameEngine"
@@ -42,8 +53,18 @@ targetdir "./bin/%{cfg.buildcfg}/%{cfg.platform}"
 -- libdirs  ( <follow the target dir pattern> )
 location "Engine"
 files { "Engine/**" }
+
+----------------------------------------------------------------------------------------
+
+if( platform == "windows" ) then
 flags { "FatalCompileWarnings", "FatalLinkWarnings", "FatalWarnings"}
+end
+
+----------------------------------------------------------------------------------------
+
 cppdialect "C++20"
+
+----------------------------------------------------------------------------------------
 
 -- adding in the library directory
 if( platform == "windows" ) then
@@ -52,6 +73,8 @@ if( platform == "windows" ) then
 else
    libdirs { "RenderingLibraries/lib/%{cfg.platform}/**" }
 end
+
+----------------------------------------------------------------------------------------
 
 --files { "Engine/**.c" }
 --files { "Engine/**.cpp" }
@@ -72,15 +95,26 @@ if( platform == "windows" ) then
       includedirs { vulkan_sdk .. "/Include" }
       links {"vulkan-1", "glfw3"}
 else
-   links { "glfw", "dl", "GL" } 
    includedirs { "Engine/**/", "RenderingLibraries/include/**", "Engine/include/opengl_ver/", "/usr/include/GL/"}
+   links { "glfw", "dl", "GL" } 
+   
+   filter "Debug_Vulkan"
+      libdirs { vulkan_sdk .. "/lib" }
+      includedirs { vulkan_sdk .. "/include" }
+      links { "vulkan" }
+   filter "Release_Vulkan"
+      libdirs { vulkan_sdk .. "/lib" }
+      includedirs { vulkan_sdk .. "/include" }
+      links { "vulkan" }
 end
+
+----------------------------------------------------------------------------------------
 
 -- Degub stuff here
 -- if you want OPENGL by default change "DIRECT3D" to "OPENGL"
 if( platform == "windows" ) then
    filter { "configurations:Debug_DX" }
-      defines { "DEBUG", directx_string }
+      defines { "DEBUG", directx_string}
       symbols "On"
 end
 
@@ -109,13 +143,25 @@ filter "configurations:Release_Vulkan"
    defines { "NDEBUG", vulkan_string } 
    optimize "On"
 
+----------------------------------------------------------------------------------------
+
 -- platform configuration for 64-bit build
 if( platform == "windows" ) then 
    filter{ "platforms:Win64" } 
       system "Windows" 
       architecture "x64"
-else 
-   filter{ "platforms:amd64" } 
-      system "Linux" 
-      architecture "x64" 
+      defines{ "PC" }
+else
+   if(machine_type == "aarch64") then -- check the architecture for setting up the project files.
+      filter{ "platforms:arm64" }
+         system "Linux"
+         architecture "ARM64"
+         defines{ "LINUX" }
+   else
+      filter{ "platforms:amd64" } 
+         system "Linux" 
+         architecture "x64"
+   end
 end
+
+----------------------------------------------------------------------------------------

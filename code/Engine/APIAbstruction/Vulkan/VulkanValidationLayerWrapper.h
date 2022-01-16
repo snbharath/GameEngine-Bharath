@@ -14,9 +14,10 @@ namespace GE
 
 		VulkanValidationLayerWrapper();
 		~VulkanValidationLayerWrapper() {};
-
+		
 		const vector<const char*> m_cValidationLayers = {
-			"VK_LAYER_KHRONOS_validation"
+			"VK_LAYER_KHRONOS_validation", // PC
+			"VK_LAYER_MESA_device_select" // rpi
 		};
 
 		const bool m_cEnableValidationLayers;
