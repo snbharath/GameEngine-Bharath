@@ -217,8 +217,8 @@ bool VulkanPhysicalDevice::IsDeviceSuitable(VkPhysicalDevice device)
 	// Since Raspberry pi has integrated GPU, approve the device type in the device selection.
 	#if defined(PC)
 	bool isDeviceTypeApproved = deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU;
-	#else // rpi or linux
-	bool isDeviceTypeApproved = deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU;
+	#else // rpi(VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU) or linux-VM (VK_PHYSICAL_DEVICE_TYPE_CPU)
+	bool isDeviceTypeApproved = (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU || deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_CPU);
 	#endif
 	
 	return (
