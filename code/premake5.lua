@@ -24,7 +24,7 @@ local Operating_System
 local vulkan_string = "VULKAN"
 local opengl_string = "OPENGL"
 local directx_string = "DIRECTX"
-local vulkan_sdk = os.getenv("VK_SDK_PATH")
+local vulkan_sdk = os.getenv("VULKAN_SDK")
 local machine_type = os.getenv("ARCH_TYPE")
 
 ----------------------------------------------------------------------------------------
