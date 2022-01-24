@@ -52,7 +52,7 @@ language (lang)
 targetdir "./bin/%{cfg.buildcfg}/%{cfg.platform}"
 -- libdirs  ( <follow the target dir pattern> )
 location "Engine"
-files { "Engine/**" }
+files { "Engine/**.h", "Engine/**.cpp", "Engine/**.c" }
 
 ----------------------------------------------------------------------------------------
 
